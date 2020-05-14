@@ -1,0 +1,218 @@
+<!-- 
+For use by QRadar to filter which events are collected. Note:
+- QRadar WinCollect agent GUI limits the xpath query input to 4096 characters. Remove comments and compact this XML to be within the limit.
+- Microsoft's event query XPath is case sensative. Query case must match XML log document elements exaclty.
+- Microsoft's event query XPath is limited to 22 parent items with xpath or/and logic.
+  - Use grouping with brackets to work arround the limit.
+  - As a rule of thumb, avoid more than 22 groups of items per select query.
+  - Or nest queries into child groups, e.g '((<xpath 1>) or (<xpath 2>)) or ((<xpath 3>) or (<xpath 4>))' to keep to no more than 22 items.
+- The suppress part of a query applies to all of the selects within a query?
+- The Log Name Path only needs to be inlcuded in the Select element. It does not have to be inlcuded in the Query element.
+- Queries adapted from https://docs.microsoft.com/en-us/windows/security/threat-protection/use-windows-event-forwarding-to-assist-in-intrusion-detection
+  - Microsoft's examples are verbose and were refactored to reduce the size (given the QRadar 4K input limit).
+- Some logs are not enabled by default. The following logs need to be explicitly enabled (e.g. via GPO):
+  - Microsoft-Windows-TaskScheduler/Operational
+-->
+
+<QueryList>
+
+  <!-- Microsoft recommended security events for intrustion detection: Appendix E -->
+  <Query Id='0'>
+
+    <!-- Simple selection from Security by IDs -->
+    <Select Path='Security'>
+      *[System[
+        <!-- 21 event IDs (limit 22) -->
+        (
+          <!-- 1102: Security Log cleared events, 1100: EventLog Service shutdown -->
+          EventID=1102 or EventID=1100 or
+          <!-- 4616: System Time Change -->
+          EventID=4616 or
+          <!-- 5632: Wireless Lan 802.1x authentication events with Peer MAC address -->
+          EventID=5632 or
+          <!-- 4778: TS Session reconnect, 4779: TS Session disconnect -->
+          EventID=4778 or EventID=4779 or
+          <!-- 4647: User initiated logoff -->
+          EventID=4647 or
+          <!-- User account events. 4720: Created, 4722: Enabled, 4725: Disabled, 4726: Deleted -->
+          EventID=4720 or EventID=4722 or EventID=4725 or EventID=4726 or
+          <!-- New user added to security group. 4732: local, 4728: global, 4756: universal -->
+          EventID=4732 or EventID=4728 or EventID=4756 or
+          <!-- 5142: Network share create, 5144: Network share delete -->
+          EventID=5142 or EventID=5144 or
+          <!-- 4688: Process -->
+          EventID=4688 or
+          <!-- 4697: New service -->
+          EventID=4697 or
+          <!-- Certificate services. 4886: Received certificate request, 4887: Approved and certificate issued, 4888: Denied request -->
+          EventID=4886 or EventID=4887 or EventID=4888
+        )
+      ]]
+    </Select>
+
+    <!-- Simple selection from Security by providers -->
+    <Select Path='Security'>
+      *[System[
+        Provider[
+          <!-- 1 providers (limit 22) -->
+          (
+            <!-- Event log service events specific to Security channel -->
+            @Name='Microsoft-Windows-Eventlog'
+          )
+        ]
+      ]]
+    </Select>
+
+    <!-- Complex selection form Security inlcuding event data -->
+    <Select Path='Security'>
+      *[
+        <!-- 6 complex query groups (limit 22) -->
+        <!-- Local logons without network or service events -->
+        (
+          System[EventID=4624] and 
+          EventData[
+            Data[@Name='LogonType']!=3 and 
+            Data[@Name='LogonType']!=5
+          ]
+        ) or
+        <!-- user logoff for all non-network logon sessions-->
+        (
+          System[EventID=4634] and 
+          EventData[
+            Data[@Name='LogonType']!=3
+          ]
+        ) or
+        <!-- Service logon events if the user account isn't LocalSystem, NetworkService, LocalService -->
+        (
+          System[EventID=4624] and
+          EventData[
+            Data[@Name='LogonType']='5' and 
+            Data[@Name='TargetUserSid']!='S-1-5-18' and
+            Data[@Name='TargetUserSid']!='S-1-5-19' and
+            Data[@Name='TargetUserSid']!='S-1-5-20'
+          ]
+        ) or
+        <!-- Special Privileges (Admin-equivalent Access) assigned to new logon, excluding LocalSystem-->
+        (
+          System[EventID=4672] and
+          EventData[
+            Data[1]!='S-1-5-18'
+          ]
+        ) or
+        <!-- User removed from local Administrators group-->
+        (
+          System[EventID=4733] and 
+          EventData[
+            Data[@Name='TargetUserName']='Administrators'
+          ]
+        ) or
+        <!-- Network share object access without IPC$ and Netlogon shares -->
+        (
+          System[EventID=5140] and 
+          EventData[
+            Data[@Name='ShareName']!='\\*\IPC$' and 
+            Data[@Name='ShareName']!='\\*\NetLogon'
+          ]
+        )
+      ]
+    </Select>
+
+    <!-- Simple selection from System by Provider and event IDs -->
+    <Select Path='System'>
+      *[
+        System[
+          <!-- 5 query groups (limit 22) -->
+          <!-- Event log service events -->
+          Provider[@Name='Microsoft-Windows-Eventlog'] or          
+          <!-- 7000: Service Install, 7045: Service start failure -->
+          (Provider[@Name='Service Control Manager'] and (EventID=7000 or EventID=7045)) or
+          <!-- Anti-malware *old* events, but only detect events (cuts down noise) -->
+          (Provider[@Name='Microsoft Antimalware'] and EventID&gt;=1116 and EventID&lt;=1119) or
+          <!-- 12: System startup (includes OS/SP/Version), 13: shutdown -->
+          (Provider[@Name='Microsoft-Windows-Kernel-General'] and (EventID=12 or EventID=13)) or
+          <!-- Shutdown initiate requests, with user, process and reason (if supplied) -->
+          (Provider[@Name='USER32'] and EventID=1074)
+        ]
+      ]
+    </Select>
+
+    <!-- Selection from Application by Provider, event IDs and sometimes with custom/complex event data filters -->
+    <Select Path='Application'>
+      <!-- 2 query groups (limit 22) -->
+      *[
+        System[
+           <!-- EMET events -->
+          Provider[@Name='EMET'] or
+          <!-- Application crash/hang events, similar to WER/1001. These include full path to faulting EXE/Module.-->
+          (Provider[@Name='Application Error'] and EventID=1000) or
+          (Provider[@Name='Application Hang'] and EventID=1002) or
+          <!-- 1511: User logging on with Temporary profile, 1501: Cannot create profile, 1518: Using temporary profile -->
+          <!-- ID 1501 missing from Microsoft query -->
+          (Provider[@Name='Microsoft-Windows-User Profiles Service'] and (EventID=1511 or EventID=1518))
+          <!-- With ID 1501 -->
+          <!-- (Provider[@Name='Microsoft-Windows-User Profiles Service'] and (EventID=1511 or EventID=1501 or EventID=1518)) -->
+        ] or
+        ( System[
+            Provider[@Name='Windows Error Reporting']
+          ] and
+          EventData[
+            Data[3]='APPCRASH'
+          ]
+        )
+      ]
+    </Select>
+
+    <!-- Task scheduler Task Registered (106),  Task Registration Deleted (141), Task Deleted (142) -->
+    <Select Path='Microsoft-Windows-TaskScheduler/Operational'>
+      *[System[Provider[@Name='Microsoft-Windows-TaskScheduler'] and (EventID=106 or EventID=141 or EventID=142 )]]
+    </Select>
+    <!-- Ommitted getting events from the System log since they don't appear to be produced there based on the sampling I did -->
+    <!-- <Select Path='System'>*[System[Provider[@Name='Microsoft-Windows-TaskScheduler'] and (EventID=106 or EventID=141 or EventID=142 )]]</Select> -->
+
+    <!-- AppLocker EXE events or Script events -->
+    <Select Path='Microsoft-Windows-AppLocker/EXE and DLL'>
+      *[UserData[RuleAndFileData[PolicyName='EXE']]]
+    </Select>
+    <Select Path='Microsoft-Windows-AppLocker/MSI and Script'>
+      *
+    </Select>
+    <!-- AppLocker packaged (Modern UI) app execution -->
+    <Select Path='Microsoft-Windows-AppLocker/Packaged app-Execution'>
+      *
+    </Select>
+    <!-- AppLocker packaged (Modern UI) app installation -->
+    <Select Path='Microsoft-Windows-AppLocker/Packaged app-Deployment'>
+      *
+    </Select>
+
+    <!-- Log attempted TS connect to remote server -->
+    <Select Path='Microsoft-Windows-TerminalServices-RDPClient/Operational'>
+      *[System[EventID=1024]]
+    </Select>
+
+    <!-- Gets all Smart-card Card-Holder Verification (CHV) events (success and failure) performed on the host. -->
+    <Select Path='Microsoft-Windows-SmartCard-Audit/Authentication'>
+      *
+    </Select>
+
+    <!-- get all UNC/mapped drive successful connection -->
+    <Select Path='Microsoft-Windows-SMBClient/Operational'>
+      *[System[EventID=30622 or EventID=30624]]
+    </Select>
+
+    <!-- Modern SysMon event provider-->
+    <Select Path='Microsoft-Windows-Sysmon/Operational'>
+      *
+    </Select>
+
+    <!-- Modern Windows Defender event provider Detection events (1006-1009) and (1116-1119) -->
+    <Select Path='Microsoft-Windows-Windows Defender/Operational'>
+      *[System[
+        (EventID&gt;=1006 and EventID&lt;=1009) or
+        (EventID&gt;=1116 and EventID&lt;=1119)
+      ]]
+    </Select>
+
+  </Query>
+
+</QueryList>

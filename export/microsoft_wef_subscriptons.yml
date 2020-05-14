@@ -1,0 +1,527 @@
+- file: ./microsoft/Appendix E - Annotated baseline subscription event query.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: System
+    Selections:
+    - EventIDs:
+      - 1116
+      - 1117
+      - 1118
+      - 1119
+      Path: System
+      Providers:
+      - Microsoft Antimalware
+      XPath: '*[System[Provider[@Name=''Microsoft Antimalware''] and (EventID >= 1116
+        and EventID <= 1119)]]'
+  - Attributes:
+      Id: '1'
+      Path: Microsoft-Windows-AppLocker/EXE and DLL
+    Selections:
+    - Path: Microsoft-Windows-AppLocker/EXE and DLL
+      XPath: '*[UserData[RuleAndFileData[PolicyName="EXE"]]]'
+    - Path: Microsoft-Windows-AppLocker/MSI and Script
+      XPath: '*'
+  - Attributes:
+      Id: '2'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 5632
+      Path: Security
+      XPath: '*[System[(EventID=5632)]]'
+  - Attributes:
+      Id: '3'
+      Path: Microsoft-Windows-TaskScheduler/Operational
+    Selections:
+    - EventIDs:
+      - 106
+      - 141
+      - 142
+      Path: Microsoft-Windows-TaskScheduler/Operational
+      Providers:
+      - Microsoft-Windows-TaskScheduler
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-TaskScheduler''] and (EventID=106
+        or EventID=141 or EventID=142 )]]'
+    - EventIDs:
+      - 106
+      - 141
+      - 142
+      Path: System
+      Providers:
+      - Microsoft-Windows-TaskScheduler
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-TaskScheduler''] and (EventID=106
+        or EventID=141 or EventID=142 )]]'
+  - Attributes:
+      Id: '4'
+      Path: System
+    Selections:
+    - EventIDs:
+      - 12
+      - 13
+      Path: System
+      Providers:
+      - Microsoft-Windows-Kernel-General
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-Kernel-General''] and (EventID=12
+        or EventID=13)]]'
+  - Attributes:
+      Id: '5'
+      Path: System
+    Selections:
+    - EventIDs:
+      - 7000
+      - 7045
+      Path: System
+      Providers:
+      - Service Control Manager
+      XPath: '*[System[Provider[@Name=''Service Control Manager''] and (EventID =
+        7000 or EventID=7045)]]'
+    - EventIDs:
+      - 4697
+      Path: Security
+      XPath: '*[System[(EventID=4697)]]'
+  - Attributes:
+      Id: '6'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 4778
+      - 4779
+      Path: Security
+      XPath: '*[System[(EventID=4778 or EventID=4779)]]'
+  - Attributes:
+      Id: '7'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 5140
+      Path: Security
+      XPath: '*[System[(EventID=5140)]] and (*[EventData[Data[@Name="ShareName"]!="\\*\IPC$"]])
+        and (*[EventData[Data[@Name="ShareName"]!="\\*\NetLogon"]])'
+  - Attributes:
+      Id: '8'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 4616
+      Path: Security
+      XPath: '*[System[(EventID=4616)]]'
+  - Attributes:
+      Id: '9'
+      Path: System
+    Selections:
+    - EventIDs:
+      - 1074
+      Path: System
+      Providers:
+      - USER32
+      XPath: '*[System[Provider[@Name=''USER32''] and (EventID=1074)]]'
+  - Attributes:
+      Id: '10'
+      Path: Microsoft-Windows-AppLocker/Packaged app-Execution
+    Selections:
+    - Path: Microsoft-Windows-AppLocker/Packaged app-Execution
+      XPath: '*'
+  - Attributes:
+      Id: '11'
+      Path: Microsoft-Windows-AppLocker/Packaged app-Deployment
+    Selections:
+    - Path: Microsoft-Windows-AppLocker/Packaged app-Deployment
+      XPath: '*'
+  - Attributes:
+      Id: '12'
+      Path: Application
+    Selections:
+    - Path: Application
+      Providers:
+      - EMET
+      XPath: '*[System[Provider[@Name=''EMET'']]]'
+  - Attributes:
+      Id: '13'
+      Path: System
+    Selections:
+    - Path: System
+      Providers:
+      - Microsoft-Windows-Eventlog
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-Eventlog'']]]'
+  - Attributes:
+      Id: '14'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 4624
+      Path: Security
+      XPath: '*[System[(EventID=4624)]] and (*[EventData[Data[@Name="LogonType"]!="3"]])
+        and (*[EventData[Data[@Name="LogonType"]!="5"]])'
+  - Attributes:
+      Id: '15'
+      Path: Application
+    Selections:
+    - Path: Application
+      Providers:
+      - Windows Error Reporting
+      XPath: '*[System[Provider[@Name=''Windows Error Reporting'']]] and (*[EventData[Data[3]
+        ="APPCRASH"]])'
+  - Attributes:
+      Id: '16'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 1102
+      - 1100
+      Path: Security
+      XPath: '*[System[(EventID=1102 or EventID = 1100)]]'
+  - Attributes:
+      Id: '17'
+      Path: System
+    Selections:
+    - EventIDs:
+      - 104
+      Path: System
+      XPath: '*[System[(EventID=104)]]'
+  - Attributes:
+      Id: '18'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 4647
+      Path: Security
+      XPath: '*[System[(EventID=4647)]]'
+  - Attributes:
+      Id: '19'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 4634
+      Path: Security
+      XPath: '*[System[(EventID=4634)]] and (*[EventData[Data[@Name="LogonType"] !=
+        "3"]])'
+  - Attributes:
+      Id: '20'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 4624
+      Path: Security
+      XPath: '*[System[(EventID=4624)]] and (*[EventData[Data[@Name="LogonType"]="5"]])
+        and (*[EventData[Data[@Name="TargetUserSid"] != "S-1-5-18"]]) and (*[EventData[Data[@Name="TargetUserSid"]
+        != "S-1-5-19"]]) and (*[EventData[Data[@Name="TargetUserSid"] != "S-1-5-20"]])'
+  - Attributes:
+      Id: '21'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 5142
+      - 5144
+      Path: Security
+      XPath: '*[System[(EventID=5142 or EventID=5144)]]'
+  - Attributes:
+      Id: '22'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 4688
+      Path: Security
+      XPath: '*[System[EventID=4688]]'
+  - Attributes:
+      Id: '23'
+      Path: Security
+    Selections:
+    - Path: Security
+      Providers:
+      - Microsoft-Windows-Eventlog
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-Eventlog'']]]'
+  - Attributes:
+      Id: '26'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 4672
+      Path: Security
+      XPath: '*[System[(EventID=4672)]]'
+    Suppressions:
+    - Path: Security
+      XPath: '*[EventData[Data[1]="S-1-5-18"]]'
+  - Attributes:
+      Id: '27'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 4732
+      Path: Security
+      XPath: '*[System[(EventID=4732)]]'
+  - Attributes:
+      Id: '28'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 4728
+      Path: Security
+      XPath: '*[System[(EventID=4728)]]'
+  - Attributes:
+      Id: '29'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 4756
+      Path: Security
+      XPath: '*[System[(EventID=4756)]]'
+  - Attributes:
+      Id: '30'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 4733
+      Path: Security
+      XPath: '*[System[(EventID=4733)]] and (*[EventData[Data[@Name="TargetUserName"]="Administrators"]])'
+  - Attributes:
+      Id: '31'
+      Path: Microsoft-Windows-TerminalServices-RDPClient/Operational
+    Selections:
+    - EventIDs:
+      - 1024
+      Path: Microsoft-Windows-TerminalServices-RDPClient/Operational
+      XPath: '*[System[(EventID=1024)]]'
+  - Attributes:
+      Id: '32'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 4886
+      - 4887
+      - 4888
+      Path: Security
+      XPath: '*[System[(EventID=4886 or EventID=4887 or EventID=4888)]]'
+  - Attributes:
+      Id: '34'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 4720
+      - 4722
+      - 4725
+      - 4726
+      Path: Security
+      XPath: '*[System[(EventID=4720 or EventID=4722 or EventID=4725 or EventID=4726)]]'
+  - Attributes:
+      Id: '35'
+      Path: Microsoft-Windows-SmartCard-Audit/Authentication
+    Selections:
+    - Path: Microsoft-Windows-SmartCard-Audit/Authentication
+      XPath: '*'
+  - Attributes:
+      Id: '36'
+      Path: Microsoft-Windows-SMBClient/Operational
+    Selections:
+    - EventIDs:
+      - 30622
+      - 30624
+      Path: Microsoft-Windows-SMBClient/Operational
+      XPath: '*[System[(EventID=30622 or EventID=30624)]]'
+  - Attributes:
+      Id: '37'
+      Path: Application
+    Selections:
+    - EventIDs:
+      - 1511
+      - 1518
+      Path: Application
+      Providers:
+      - Microsoft-Windows-User Profiles Service
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-User Profiles Service'']
+        and (EventID=1511 or EventID=1518)]]'
+  - Attributes:
+      Id: '39'
+      Path: Microsoft-Windows-Sysmon/Operational
+    Selections:
+    - Path: Microsoft-Windows-Sysmon/Operational
+      XPath: '*'
+  - Attributes:
+      Id: '40'
+      Path: Application
+    Selections:
+    - EventIDs:
+      - 1000
+      Path: Application
+      Providers:
+      - Application Error
+      XPath: '*[System[Provider[@Name=''Application Error''] and (EventID=1000)]]'
+    - EventIDs:
+      - 1002
+      Path: Application
+      Providers:
+      - Application Hang
+      XPath: '*[System[Provider[@Name=''Application Hang''] and (EventID=1002)]]'
+  - Attributes:
+      Id: '41'
+      Path: Microsoft-Windows-Windows Defender/Operational
+    Selections:
+    - EventIDs:
+      - 1006
+      - 1007
+      - 1008
+      - 1009
+      Path: Microsoft-Windows-Windows Defender/Operational
+      XPath: '*[System[( (EventID >= 1006 and EventID <= 1009) )]]'
+    - EventIDs:
+      - 1116
+      - 1117
+      - 1118
+      - 1119
+      Path: Microsoft-Windows-Windows Defender/Operational
+      XPath: '*[System[( (EventID >= 1116 and EventID <= 1119) )]]'
+- file: ./microsoft/Appendix F - Annotated Suspect Subscription Event Query.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 4624
+      Path: Security
+      XPath: '*[System[(EventID=4624)]] and (*[EventData[Data[@Name="LogonType"]="3"]])'
+  - Attributes:
+      Id: '1'
+      Path: System
+    Selections:
+    - EventIDs:
+      - 20274
+      - 20250
+      - 20275
+      Path: System
+      Providers:
+      - RemoteAccess
+      XPath: '*[System[Provider[@Name=''RemoteAccess''] and (EventID=20274 or EventID=20250
+        or EventID=20275)]]'
+  - Attributes:
+      Id: '2'
+      Path: Microsoft-Windows-CAPI2/Operational
+    Selections:
+    - EventIDs:
+      - 11
+      - 70
+      - 90
+      Path: Microsoft-Windows-CAPI2/Operational
+      XPath: '*[System[(EventID=11 or EventID=70 or EventID=90)]]'
+  - Attributes:
+      Id: '3'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 4880
+      - 4881
+      - 4896
+      - 4898
+      Path: Security
+      XPath: '*[System[(EventID=4880 or EventID = 4881 or EventID = 4896 or EventID
+        = 4898)]]'
+  - Attributes:
+      Id: '4'
+      Path: Microsoft-Windows-LSA/Operational
+    Selections:
+    - EventIDs:
+      - 300
+      Path: Microsoft-Windows-LSA/Operational
+      XPath: '*[System[(EventID=300)]] and (*[EventData[Data[@Name="TargetUserSid"]
+        != "S-1-5-20"]]) and (*[EventData[Data[@Name="TargetUserSid"] != "S-1-5-18"]])
+        and (*[EventData[Data[@Name="TargetUserSid"] != "S-1-5-19"]])'
+  - Attributes:
+      Id: '5'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 4634
+      Path: Security
+      XPath: '*[System[(EventID=4634)]] and (*[EventData[Data[@Name="LogonType"] =
+        "3"]])'
+  - Attributes:
+      Id: '6'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 6272
+      - 6273
+      - 6274
+      - 6275
+      - 6276
+      - 6277
+      - 6278
+      - 6279
+      - 6280
+      Path: Security
+      XPath: '*[System[( (EventID >= 6272 and EventID <= 6280) )]]'
+  - Attributes:
+      Id: '7'
+      Path: Microsoft-Windows-DNS-Client/Operational
+    Selections:
+    - EventIDs:
+      - 3008
+      Path: Microsoft-Windows-DNS-Client/Operational
+      XPath: '*[System[(EventID=3008)]]'
+    Suppressions:
+    - Path: Microsoft-Windows-DNS-Client/Operational
+      XPath: '*[EventData[Data[@Name="QueryOptions"]="140737488355328"]]'
+    - Path: Microsoft-Windows-DNS-Client/Operational
+      XPath: '*[EventData[Data[@Name="QueryResults"]=""]]'
+  - Attributes:
+      Id: '8'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 4689
+      Path: Security
+      XPath: '*[System[(EventID = 4689)]]'
+  - Attributes:
+      Id: '9'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 4776
+      - 4648
+      Path: Security
+      XPath: '*[System[(EventID=4776 or EventID=4648)]]'
+  - Attributes:
+      Id: '10'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 4657
+      Path: Security
+      XPath: '*[System[(EventID=4657)]] and ((*[EventData[Data[@Name="OperationType"]
+        = "%%1904"]]) or (*[EventData[Data[@Name="OperationType"] = "%%1905"]]) or
+        (*[EventData[Data[@Name="OperationType"] = "%%1906"]]))'
+  - Attributes:
+      Id: '11'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 5632
+      Path: Security
+      XPath: '*[System[(EventID=5632)]]'
+  - Attributes:
+      Id: '12'
+      Path: Microsoft-Windows-PowerShell/Operational
+    Selections:
+    - EventIDs:
+      - 4103
+      - 4104
+      - 4105
+      - 4106
+      Path: Microsoft-Windows-PowerShell/Operational
+      XPath: '*[System[(EventID=4103 or EventID=4104 or EventID=4105 or EventID=4106)]]'
+  - Attributes:
+      Id: '13'
+      Path: Microsoft-Windows-DriverFrameworks-UserMode/Operational
+    Selections:
+    - EventIDs:
+      - 2004
+      Path: Microsoft-Windows-DriverFrameworks-UserMode/Operational
+      XPath: '*[System[(EventID=2004)]]'
+  - Attributes:
+      Id: '14'
+      Path: Windows PowerShell
+    Selections:
+    - EventIDs:
+      - 800
+      Path: Windows PowerShell
+      XPath: '*[System[(EventID=800)]]'

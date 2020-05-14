@@ -1,0 +1,1269 @@
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/DNS.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: Microsoft-Windows-DNS-Client/Operational
+    Selections:
+    - EventIDs:
+      - 3008
+      Path: Microsoft-Windows-DNS-Client/Operational
+      XPath: '*[System[(EventID=3008)]]'
+    Suppressions:
+    - Path: Microsoft-Windows-DNS-Client/Operational
+      XPath: '*[EventData[Data[@Name="QueryOptions"]="140737488355328"]]'
+    - Path: Microsoft-Windows-DNS-Client/Operational
+      XPath: '*[EventData[Data[@Name="QueryResults"]=""]]'
+  - Attributes:
+      Id: '1'
+      Path: DNS Server
+    Selections:
+    - EventIDs:
+      - 150
+      - 770
+      Path: DNS Server
+      XPath: '*[System[(EventID=150 or EventID=770)]]'
+    - EventIDs:
+      - 541
+      Path: Microsoft-Windows-DNSServer/Audit
+      XPath: '*[System[(EventID=541)]]'
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/ADFS.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: Security
+    Selections:
+    - Path: Security
+      Providers:
+      - AD FS Auditing
+      XPath: '*[System[Provider[@Name=''AD FS Auditing'']]]'
+  - Attributes:
+      Id: '1'
+      Path: AD FS/Admin
+    Selections:
+    - Path: AD FS/Admin
+      Providers:
+      - AD FS
+      XPath: '*[System[Provider[@Name=''AD FS'']]]'
+  - Attributes:
+      Id: '2'
+      Path: AD FS Tracing/Debug
+    Selections:
+    - Path: AD FS Tracing/Debug
+      XPath: '*'
+  - Attributes:
+      Id: '3'
+      Path: Duo Authentication for AD FS
+    Selections:
+    - Path: Duo Authentication for AD FS
+      XPath: '*'
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/Task-Scheduler.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: Microsoft-Windows-TaskScheduler/Operational
+    Selections:
+    - EventIDs:
+      - 106
+      - 129
+      - 141
+      - 142
+      - 200
+      - 201
+      Path: Microsoft-Windows-TaskScheduler/Operational
+      Providers:
+      - Microsoft-Windows-TaskScheduler
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-TaskScheduler''] and (EventID=106
+        or EventID=129 or EventID=141 or EventID=142 or EventID=200 or EventID=201)]]'
+  - Attributes:
+      Id: '1'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 4698
+      - 4699
+      - 4700
+      - 4701
+      - 4702
+      Path: Security
+      XPath: '*[System[(EventID >=4698 and EventID <=4702)]]'
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/Code-Integrity.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: Microsoft-Windows-CodeIntegrity/Operational
+    Selections:
+    - EventIDs:
+      - 3001
+      - 3002
+      - 3003
+      - 3004
+      - 3010
+      - 3023
+      Levels:
+      - '2'
+      - '3'
+      Path: Microsoft-Windows-CodeIntegrity/Operational
+      Providers:
+      - Microsoft-Windows-CodeIntegrity
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-CodeIntegrity''] and (Level=2
+        or Level=3) and (EventID=3001 or EventID=3002 or EventID=3003 or EventID=3004
+        or EventID=3010 or EventID=3023)]]'
+  - Attributes:
+      Id: '1'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 5038
+      - 6281
+      - 6410
+      Levels:
+      - '0'
+      - '4'
+      Path: Security
+      Providers:
+      - Microsoft-Windows-Security-Auditing
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-Security-Auditing''] and
+        (Level=0 or Level=4) and (EventID=5038 or EventID=6281 or EventID=6410)]]'
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/Object-Manipulation.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 4715
+      - 4817
+      - 4656
+      - 4658
+      - 4660
+      - 4663
+      - 4670
+      Path: Security
+      XPath: '*[System[(EventID=4715 or EventID=4817 or EventID=4656 or EventID=4658
+        or EventID=4660 or EventID=4663 or EventID=4670)]]'
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/WMI.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: Microsoft-Windows-WMI-Activity/Operational
+    Selections:
+    - Path: Microsoft-Windows-WMI-Activity/Operational
+      XPath: '*'
+  - Attributes:
+      Id: '1'
+      Path: Microsoft-Windows-TPM-WMI
+    Selections:
+    - Path: Microsoft-Windows-TPM-WMI
+      XPath: '*'
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/Certificate-Authority.xml
+  queries:
+  - Attributes:
+      Id: '32'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 4886
+      - 4887
+      - 4888
+      Path: Security
+      XPath: '*[System[(EventID=4886 or EventID=4887 or EventID=4888)]]'
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/Log-Deletion-Security.xml
+  queries:
+  - Attributes:
+      Id: '0'
+    Selections:
+    - EventIDs:
+      - 1102
+      Levels:
+      - '4'
+      Path: Security
+      Providers:
+      - Microsoft-Windows-Eventlog
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-Eventlog''] and Level=4
+        and EventID=1102]]'
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/Powershell.xml
+  queries:
+  - Attributes:
+      Id: '0'
+    Selections:
+    - Path: Microsoft-Windows-PowerShell/Operational
+      XPath: '*'
+    - Path: Microsoft-Windows-PowerShell-DesiredStateConfiguration-FileDownloadManager/Operational
+      XPath: '*'
+    - Path: Windows PowerShell
+      XPath: '*'
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/Group-Policy-Errors.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: System
+    Selections:
+    - EventIDs:
+      - 1085
+      - 1125
+      - 1127
+      - 1129
+      Levels:
+      - '2'
+      Path: System
+      Providers:
+      - Microsoft-Windows-GroupPolicy
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-GroupPolicy''] and Level=2
+        and (EventID=1085 or EventID=1125 or EventID=1127 or EventID=1129)]]'
+  - Attributes:
+      Id: '1'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 6144
+      - 6145
+      Path: Security
+      XPath: '*[System[(EventID=6144 or EventID=6145)]]'
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/MSI-Packages.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: Application
+    Selections:
+    - EventIDs:
+      - 1022
+      - 1033
+      Path: Application
+      Providers:
+      - MsiInstaller
+      XPath: '*[System[Provider[@Name=''MsiInstaller''] and (EventID=1022 or EventID=1033)]]'
+    - EventIDs:
+      - 2
+      Levels:
+      - '0'
+      Path: Setup
+      Providers:
+      - Microsoft-Windows-Servicing
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-Servicing''] and EventID=2
+        and Level=0]] and *[UserData[CbsPackageChangeState[IntendedPackageState=''Installed'']]] '
+    - EventIDs:
+      - 903
+      - 904
+      Path: Microsoft-Windows-Application-Experience/Program-Inventory
+      Providers:
+      - Microsoft-Windows-Application-Experience
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-Application-Experience'']
+        and (EventID=903 or EventID=904)]]'
+    - EventIDs:
+      - 905
+      - 906
+      Path: Microsoft-Windows-Application-Experience/Program-Inventory
+      Providers:
+      - Microsoft-Windows-Application-Experience
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-Application-Experience'']
+        and (EventID=905 or EventID=906)]]'
+    - EventIDs:
+      - 907
+      - 908
+      Path: Microsoft-Windows-Application-Experience/Program-Inventory
+      Providers:
+      - Microsoft-Windows-Application-Experience
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-Application-Experience'']
+        and (EventID=907 or EventID=908)]]'
+    - EventIDs:
+      - 800
+      Path: Microsoft-Windows-Application-Experience/Program-Inventory
+      Providers:
+      - Microsoft-Windows-Application-Experience
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-Application-Experience'']
+        and EventID=800]]'
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/External-Devices.xml
+  queries:
+  - Attributes:
+      Id: '0'
+    Selections:
+    - EventIDs:
+      - 400
+      - 410
+      Levels:
+      - '4'
+      Path: Microsoft-Windows-Kernel-PnP/Configuration
+      Providers:
+      - Microsoft-Windows-Kernel-PnP
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-Kernel-PnP''] and Level=4
+        and (EventID=400 or EventID=410)]] and *[EventData[Data[@Name=''DriverName'']="usbstor.inf"]] '
+  - Attributes:
+      Id: '1'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 6416
+      Path: Security
+      XPath: '*[System[(EventID=6416)]]'
+    - EventIDs:
+      - 6419
+      - 6420
+      - 6421
+      - 6422
+      - 6423
+      - 6424
+      Path: Security
+      XPath: '*[System[(EventID >=6419 and EventID <=6424)]]'
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/Exploit-Guard-EP.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: Microsoft-Windows-Security-Mitigations/KernelMode
+    Selections:
+    - Path: Microsoft-Windows-Security-Mitigations/KernelMode
+      XPath: '*'
+  - Attributes:
+      Id: '1'
+      Path: Microsoft-Windows-Security-Mitigations/UserMode
+    Selections:
+    - Path: Microsoft-Windows-Security-Mitigations/UserMode
+      XPath: '*'
+  - Attributes:
+      Id: '2'
+      Path: Microsoft-Windows-Win32k/Operational
+    Selections:
+    - EventIDs:
+      - 260
+      Path: Microsoft-Windows-Win32k/Operational
+      XPath: '*[System[(EventID=260)]]'
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/Firewall.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: Microsoft-Windows-Windows Firewall With Advanced Security/Firewall
+    Selections:
+    - EventIDs:
+      - 2004
+      - 2005
+      - 2006
+      - 2009
+      - 2033
+      Levels:
+      - '2'
+      - '4'
+      - '0'
+      Path: Microsoft-Windows-Windows Firewall With Advanced Security/Firewall
+      Providers:
+      - Microsoft-Windows-Windows Firewall With Advanced Security
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-Windows Firewall With Advanced
+        Security''] and (Level=2 or Level=4 or Level=0) and (EventID=2004 or EventID=2005
+        or EventID=2006 or EventID=2009 or EventID=2033)]]'
+  - Attributes:
+      Id: '1'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 4944
+      - 4945
+      - 4946
+      - 4947
+      - 4948
+      - 4949
+      - 4950
+      - 4951
+      - 4952
+      - 4953
+      - 4954
+      Path: Security
+      XPath: '*[System[(EventID >=4944 and EventID <=4954)]]'
+    - EventIDs:
+      - 4956
+      - 4957
+      - 4958
+      Path: Security
+      XPath: '*[System[(EventID >=4956 and EventID <=4958)]]'
+  - Attributes:
+      Id: '2'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 5024
+      - 5025
+      - 5037
+      Path: Security
+      XPath: '*[System[(EventID=5024 or EventID=5025 or EventID=5037)]]'
+    - EventIDs:
+      - 5027
+      - 5028
+      - 5029
+      - 5030
+      Path: Security
+      XPath: '*[System[(EventID >=5027 and EventID <=5030)]]'
+    - EventIDs:
+      - 5032
+      - 5033
+      - 5034
+      - 5035
+      Path: Security
+      XPath: '*[System[(EventID >=5032 and EventID <=5035)]]'
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/Event-Log-Diagnostics.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: System
+    Selections:
+    - Path: System
+      Providers:
+      - Microsoft-Windows-Eventlog
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-Eventlog'']]]'
+  - Attributes:
+      Id: '1'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 1100
+      - 1104
+      - 1105
+      - 1108
+      Path: Security
+      XPath: '*[System[(EventID=1100 or EventID=1104 OR EventID=1105 OR EventID=1108)]]'
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/Print.xml
+  queries:
+  - Attributes:
+      Id: '0'
+    Selections:
+    - EventIDs:
+      - 307
+      Levels:
+      - '4'
+      Path: Microsoft-Windows-PrintService/Operational
+      Providers:
+      - Microsoft-Windows-PrintService
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-PrintService''] and Level=4
+        and EventID=307]]'
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/Bits-Client.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: Microsoft-Windows-Bits-Client/Operational
+    Selections:
+    - Path: Microsoft-Windows-Bits-Client/Operational
+      XPath: '*'
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/Registry.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 4657
+      Path: Security
+      XPath: '*[System[(EventID=4657)]] and ((*[EventData[Data[@Name="OperationType"]
+        = "%%1904"]]) or (*[EventData[Data[@Name="OperationType"] = "%%1905"]]) or
+        (*[EventData[Data[@Name="OperationType"] = "%%1906"]]))'
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/Authentication.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 4624
+      - 4625
+      - 4626
+      Path: Security
+      XPath: '*[System[(EventID >=4624 and EventID <=4626)]]'
+    - EventIDs:
+      - 4634
+      - 4647
+      - 4649
+      - 4672
+      - 4675
+      Path: Security
+      XPath: '*[System[(EventID=4634 or EventID=4647 or EventID=4649 or EventID=4672
+        or EventID=4675)]]'
+    - EventIDs:
+      - 4774
+      - 4775
+      - 4776
+      - 4777
+      - 4778
+      - 4779
+      Path: Security
+      XPath: '*[System[(EventID >=4774 and EventID <=4779)]]'
+    - EventIDs:
+      - 4800
+      - 4801
+      - 4802
+      - 4803
+      Path: Security
+      XPath: '*[System[(EventID >=4800 and EventID <=4803)]]'
+    - EventIDs:
+      - 4964
+      Path: Security
+      XPath: '*[System[(EventID=4964)]]'
+    - EventIDs:
+      - 5378
+      Path: Security
+      XPath: '*[System[(EventID=5378)]]'
+    Suppressions:
+    - Path: Security
+      XPath: '*[EventData[Data[1]="S-1-5-18"]]'
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/Log-Deletion-System.xml
+  queries:
+  - Attributes:
+      Id: '0'
+    Selections:
+    - EventIDs:
+      - 104
+      Levels:
+      - '4'
+      Path: System
+      Providers:
+      - Microsoft-Windows-Eventlog
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-Eventlog''] and Level=4
+        and EventID=104]]'
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/Privilege-Use.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 4673
+      - 4674
+      - 4985
+      Path: Security
+      XPath: '*[System[(EventID=4673 or EventID=4674 or EventID=4985)]]'
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/Windows-Diagnostics.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: Microsoft-Windows-Forwarding/Operational
+    Selections:
+    - Path: Microsoft-Windows-Forwarding/Operational
+      XPath: '*'
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/Microsoft-Office.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: OAlerts
+    Selections:
+    - Path: OAlerts
+      XPath: '*'
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/Windows-Updates.xml
+  queries:
+  - Attributes:
+      Id: '0'
+    Selections:
+    - EventIDs:
+      - 19
+      - 20
+      - 24
+      - 25
+      - 31
+      - 34
+      - 35
+      Levels:
+      - '2'
+      Path: Microsoft-Windows-WindowsUpdateClient/Operational
+      Providers:
+      - Microsoft-Windows-WindowsUpdateClient
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-WindowsUpdateClient''] and
+        Level=2 and (EventID=19 or EventID=20 or EventID=24 or EventID=25 or EventID=31
+        or EventID=34 or EventID=35)]]'
+    - EventIDs:
+      - 1009
+      Levels:
+      - '0'
+      Path: Setup
+      Providers:
+      - Microsoft-Windows-Servicing
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-Servicing''] and Level=0
+        and EventID=1009]]'
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/Duo-Security.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: Application
+    Selections:
+    - Path: Application
+      Providers:
+      - Duo Security
+      XPath: '*[System[Provider[@Name=''Duo Security'']]]'
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/Process-Execution.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 4688
+      Path: Security
+      XPath: '*[System[(EventID=4688)]]'
+    - EventIDs:
+      - 4689
+      Path: Security
+      XPath: '*[System[(EventID=4689)]]'
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/Application-Crashes.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: Application
+    Selections:
+    - EventIDs:
+      - 1000
+      - 1002
+      Levels:
+      - '2'
+      Path: Application
+      XPath: '*[System[Provider[@Name=''Application Error'' or @Name=''Application
+        Hang''] and (Level=2) and (EventID=1000 or EventID=1002)]]'
+    - EventIDs:
+      - 1001
+      Levels:
+      - '4'
+      Path: Application
+      Providers:
+      - Windows Error Reporting
+      XPath: '*[System[Provider[@Name=''Windows Error Reporting''] and Level=4 and
+        EventID=1001]]'
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/Kerberos.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 4768
+      - 4769
+      - 4770
+      - 4771
+      - 4772
+      - 4773
+      Path: Security
+      XPath: '*[System[(EventID=4768 or EventID=4769 or EventID=4770 or EventID=4771
+        or EventID=4772 or EventID=4773)]]'
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/Exploit-Guard-NP.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: Microsoft-Windows-Windows Defender/Operational
+    Selections:
+    - EventIDs:
+      - 1125
+      - 1126
+      - 5007
+      Path: Microsoft-Windows-Windows Defender/Operational
+      XPath: '*[System[(EventID=1125 or EventID=1126 or EventID=5007)]]'
+    - EventIDs:
+      - 1125
+      - 1126
+      - 5007
+      Path: Microsoft-Windows-Windows Defender/WHC
+      XPath: '*[System[(EventID=1125 or EventID=1126 or EventID=5007)]]'
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/Exploit-Guard-CFA.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: Microsoft-Windows-Windows Defender/Operational
+    Selections:
+    - EventIDs:
+      - 1123
+      - 1124
+      - 5007
+      Path: Microsoft-Windows-Windows Defender/Operational
+      XPath: '*[System[(EventID=1123 or EventID=1124 or EventID=5007)]]'
+    - EventIDs:
+      - 1123
+      - 1124
+      - 5007
+      Path: Microsoft-Windows-Windows Defender/WHC
+      XPath: '*[System[(EventID=1123 or EventID=1124 or EventID=5007)]]'
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/Smart-Card.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: Microsoft-Windows-SmartCard-Audit/Authentication
+    Selections:
+    - Path: Microsoft-Windows-SmartCard-Audit/Authentication
+      XPath: '*'
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/Account-Lockout.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 4740
+      Levels:
+      - '4'
+      - '0'
+      Path: Security
+      Providers:
+      - Microsoft-Windows-Security-Auditing
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-Security-Auditing''] and
+        (Level=4 or Level=0) and EventID=4740]]'
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/Account-Management.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 4627
+      Path: Security
+      XPath: '*[System[(EventID=4627)]]'
+    - EventIDs:
+      - 4703
+      - 4704
+      - 4705
+      Path: Security
+      XPath: '*[System[(EventID=4703 or EventID=4704 or EventID=4705)]]'
+    - EventIDs:
+      - 4720
+      Path: Security
+      XPath: '*[System[(EventID=4720)]]'
+    - EventIDs:
+      - 4722
+      - 4723
+      - 4724
+      - 4725
+      - 4726
+      - 4727
+      - 4728
+      - 4729
+      - 4730
+      - 4731
+      - 4732
+      - 4733
+      - 4734
+      - 4735
+      Path: Security
+      XPath: '*[System[(EventID >=4722 and EventID <=4735)]]'
+    - EventIDs:
+      - 4737
+      - 4738
+      - 4739
+      Path: Security
+      XPath: '*[System[(EventID >=4737 and EventID <=4739)]]'
+    - EventIDs:
+      - 4741
+      - 4742
+      - 4743
+      - 4744
+      - 4745
+      - 4746
+      - 4747
+      - 4748
+      - 4749
+      - 4750
+      - 4751
+      - 4752
+      - 4753
+      - 4754
+      - 4755
+      - 4756
+      - 4757
+      - 4758
+      - 4759
+      - 4760
+      - 4761
+      - 4762
+      - 4763
+      - 4764
+      - 4765
+      - 4766
+      - 4767
+      Path: Security
+      XPath: '*[System[(EventID >=4741 and EventID <=4767)]]'
+    - EventIDs:
+      - 4780
+      - 4781
+      - 4782
+      Path: Security
+      XPath: '*[System[(EventID >=4780 and EventID <=4782)]]'
+    - EventIDs:
+      - 4793
+      - 4794
+      Path: Security
+      XPath: '*[System[(EventID=4793 or EventID=4794)]]'
+    - EventIDs:
+      - 4798
+      - 4799
+      Path: Security
+      XPath: '*[System[(EventID=4798 or EventID=4799)]]'
+    - EventIDs:
+      - 5376
+      - 5377
+      Path: Security
+      XPath: '*[System[(EventID=5376 or EventID=5377)]]'
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/Windows-Defender.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: Microsoft-Windows-Windows Defender/Operational
+    Selections:
+    - EventIDs:
+      - 1006
+      - 1007
+      - 1008
+      - 1009
+      Path: Microsoft-Windows-Windows Defender/Operational
+      XPath: '*[System[( (EventID >= 1006 and EventID <= 1009) )]]'
+    - EventIDs:
+      - 1116
+      - 1117
+      - 1118
+      - 1119
+      Path: Microsoft-Windows-Windows Defender/Operational
+      XPath: '*[System[( (EventID >= 1116 and EventID <= 1119) )]]'
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/System-Time-Change.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 4616
+      Path: Security
+      XPath: '*[System[(EventID=4616)]]'
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/Applocker.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: Microsoft-Windows-AppLocker/EXE and DLL
+    Selections:
+    - Path: Microsoft-Windows-AppLocker/EXE and DLL
+      XPath: '*[UserData[RuleAndFileData[PolicyName="EXE"]]]'
+    - Path: Microsoft-Windows-AppLocker/MSI and Script
+      XPath: '*'
+    - Path: Microsoft-Windows-AppLocker/Packaged app-Execution
+      XPath: '*'
+    - Path: Microsoft-Windows-AppLocker/Packaged app-Deployment
+      XPath: '*'
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/Terminal-Services.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: Microsoft-Windows-TerminalServices-Gateway/Admin
+    Selections:
+    - Path: Microsoft-Windows-TerminalServices-Gateway/Admin
+      XPath: '*'
+  - Attributes:
+      Id: '1'
+      Path: Microsoft-Windows-TerminalServices-Gateway/Operational
+    Selections:
+    - Path: Microsoft-Windows-TerminalServices-Gateway/Operational
+      XPath: '*'
+  - Attributes:
+      Id: '2'
+      Path: Microsoft-Windows-TerminalServices-ClientUSBDevices/Admin
+    Selections:
+    - Path: Microsoft-Windows-TerminalServices-ClientUSBDevices/Admin
+      XPath: '*'
+  - Attributes:
+      Id: '3'
+      Path: Microsoft-Windows-TerminalServices-ClientUSBDevices/Operational
+    Selections:
+    - Path: Microsoft-Windows-TerminalServices-ClientUSBDevices/Operational
+      XPath: '*'
+  - Attributes:
+      Id: '4'
+      Path: Microsoft-Windows-TerminalServices-PnPDevices/Admin
+    Selections:
+    - Path: Microsoft-Windows-TerminalServices-PnPDevices/Admin
+      XPath: '*'
+  - Attributes:
+      Id: '5'
+      Path: Microsoft-Windows-TerminalServices-PnPDevices/Operational
+    Selections:
+    - Path: Microsoft-Windows-TerminalServices-PnPDevices/Operational
+      XPath: '*'
+  - Attributes:
+      Id: '6'
+      Path: Microsoft-Windows-TerminalServices-Printers/Admin
+    Selections:
+    - Path: Microsoft-Windows-TerminalServices-Printers/Admin
+      XPath: '*'
+  - Attributes:
+      Id: '7'
+      Path: Microsoft-Windows-TerminalServices-Printers/Operational
+    Selections:
+    - Path: Microsoft-Windows-TerminalServices-Printers/Operational
+      XPath: '*'
+  - Attributes:
+      Id: '8'
+      Path: Microsoft-Windows-TerminalServices-ServerUSBDevices/Admin
+    Selections:
+    - Path: Microsoft-Windows-TerminalServices-ServerUSBDevices/Admin
+      XPath: '*'
+  - Attributes:
+      Id: '9'
+      Path: Microsoft-Windows-TerminalServices-ServerUSBDevices/Operational
+    Selections:
+    - Path: Microsoft-Windows-TerminalServices-ServerUSBDevices/Operational
+      XPath: '*'
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/Services.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: System
+    Selections:
+    - EventIDs:
+      - 7022
+      - 7023
+      - 7024
+      - 7026
+      - 7031
+      - 7032
+      - 7034
+      Levels:
+      - '1'
+      - '2'
+      - '3'
+      - '4'
+      - '0'
+      Path: System
+      Providers:
+      - Service Control Manager
+      XPath: '*[System[Provider[@Name=''Service Control Manager''] and (Level=1 or
+        Level=2 or Level=3 or Level=4 or Level=0) and (EventID=7022 or EventID=7023
+        or EventID=7024 or EventID=7026 or EventID=7031 or EventID=7032 or EventID=7034)]]'
+    - EventIDs:
+      - 7045
+      - 7040
+      Levels:
+      - '1'
+      - '2'
+      - '3'
+      - '4'
+      - '0'
+      Path: System
+      Providers:
+      - Service Control Manager
+      XPath: '*[System[Provider[@Name=''Service Control Manager''] and (Level=1 or
+        Level=2 or Level=3 or Level=4 or Level=0) and (EventID=7045 or EventID=7040)]]'
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/Operating-System.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: System
+    Selections:
+    - EventIDs:
+      - 12
+      - 13
+      Path: System
+      Providers:
+      - Microsoft-Windows-Kernel-General
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-Kernel-General''] and (EventID=12
+        or EventID=13)]]'
+    - EventIDs:
+      - 4608
+      Path: Security
+      XPath: '*[System[(EventID=4608)]]'
+  - Attributes:
+      Id: '1'
+      Path: System
+    Selections:
+    - EventIDs:
+      - 1074
+      Path: System
+      Providers:
+      - USER32
+      XPath: '*[System[Provider[@Name=''USER32''] and (EventID=1074)]]'
+  - Attributes:
+      Id: '2'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 4817
+      - 4826
+      Path: Security
+      XPath: '*[System[(EventID=4817 or EventID=4826)]]'
+  - Attributes:
+      Id: '3'
+      Path: System
+    Selections:
+    - EventIDs:
+      - 16962
+      - 16965
+      - 16968
+      - 16969
+      Path: System
+      XPath: '*[System[(EventID=16962 or EventID=16965 or EventID=16968 or EventID=16969)]]'
+  - Attributes:
+      Id: '4'
+      Path: Microsoft-Windows-SMBServer/Audit
+    Selections:
+    - EventIDs:
+      - 3000
+      Path: Microsoft-Windows-SMBServer/Audit
+      Providers:
+      - Microsoft-Windows-SMBServer
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-SMBServer''] and (EventID=3000)]]'
+  - Attributes:
+      Id: '5'
+      Path: System
+    Selections:
+    - EventIDs:
+      - 41
+      - 1001
+      - 6008
+      - 4621
+      Path: System
+      XPath: '*[System[(EventID=41 or EventID=1001 or EventID=6008 or EventID=4621)]]'
+  - Attributes:
+      Id: '6'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 4610
+      - 4611
+      - 4614
+      - 4622
+      - 4697
+      Path: Security
+      XPath: '*[System[(EventID=4610 or EventID=4611 or EventID=4614 or EventID=4622
+        or EventID=4697)]]'
+  - Attributes:
+      Id: '7'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 4719
+      - 4817
+      - 4902
+      - 4906
+      - 4908
+      - 4912
+      - 4904
+      - 4905
+      Path: Security
+      XPath: '*[System[(EventID=4719 or EventID=4817 or EventID=4902 or EventID=4906
+        or EventID=4908 or EventID=4912 or EventID=4904 or EventID=4905)]]'
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/EMET.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: Application
+    Selections:
+    - EventIDs:
+      - 1
+      - 2
+      Levels:
+      - '2'
+      - '3'
+      Path: Application
+      Providers:
+      - EMET
+      XPath: '*[System[Provider[@Name=''EMET''] and (Level=2 or Level=3) and (EventID=1
+        or EventID=2)]]'
+    Suppressions:
+    - Path: Application
+      Providers:
+      - EMET
+      XPath: '*[System[Provider[@Name=''EMET''] and (EventID=0)]]'
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/Device-Guard.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: Microsoft-Windows-DeviceGuard/Operational
+    Selections:
+    - Path: Microsoft-Windows-DeviceGuard/Operational
+      XPath: '*'
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/Autoruns.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: Autoruns
+    Selections:
+    - Path: Autoruns
+      XPath: '*'
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/Active-Directory.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 4662
+      Path: Security
+      XPath: '*[System[(EventID=4662)]] and *[System[Task=''14080'']]'
+  - Attributes:
+      Id: '1'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 5136
+      - 5137
+      - 5178
+      - 5139
+      - 5141
+      Path: Security
+      XPath: '*[System[(EventID=5136 or EventID=5137 or EventID=5178 or EventID=5139
+        or EventID=5141)]]'
+  - Attributes:
+      Id: '2'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 4713
+      Path: Security
+      XPath: '*[System[(EventID=4713)]]'
+  - Attributes:
+      Id: '3'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 4706
+      - 4707
+      - 4716
+      - 4717
+      - 4718
+      - 4739
+      - 4864
+      - 4865
+      - 4866
+      - 4867
+      Path: Security
+      XPath: '*[System[(EventID=4706 or EventID=4707 or EventID=4716 or EventID=4717
+        or EventID=4718 or EventID=4739 or EventID=4864 or EventID=4865 or EventID=4866
+        or EventID=4867)]]'
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/Drivers.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: System
+    Selections:
+    - EventIDs:
+      - 219
+      Levels:
+      - '3'
+      Path: System
+      Providers:
+      - Microsoft-Windows-Kernel-PnP
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-Kernel-PnP''] and Level=3
+        and EventID=219]]'
+  - Attributes:
+      Id: '1'
+      Path: Microsoft-Windows-DriverFrameworks-UserMode/Operational
+    Selections:
+    - EventIDs:
+      - 2004
+      Path: Microsoft-Windows-DriverFrameworks-UserMode/Operational
+      XPath: '*[System[(EventID=2004)]]'
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/Software-Restriction-Policies.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: Application
+    Selections:
+    - EventIDs:
+      - 865
+      - 866
+      - 867
+      - 868
+      - 882
+      Path: Application
+      Providers:
+      - Microsoft-Windows-SoftwareRestrictionPolicies
+      XPath: '*[Application[Provider[@Name=''Microsoft-Windows-SoftwareRestrictionPolicies'']
+        and (EventID=865 or EventID=866 or EventID=867 or EventID=868 or EventID=882)]]'
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/Exploit-Guard-ASR.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: Microsoft-Windows-Windows Defender/Operational
+    Selections:
+    - EventIDs:
+      - 1121
+      - 1122
+      - 5007
+      Path: Microsoft-Windows-Windows Defender/Operational
+      XPath: '*[System[(EventID=1121 or EventID=1122 or EventID=5007)]]'
+    - EventIDs:
+      - 1121
+      - 1122
+      - 5007
+      Path: Microsoft-Windows-Windows Defender/WHC
+      XPath: '*[System[(EventID=1121 or EventID=1122 or EventID=5007)]]'
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/Explicit-Credentials.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 4648
+      Levels:
+      - '4'
+      - '0'
+      Path: Security
+      Providers:
+      - Microsoft-Windows-Security-Auditing
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-Security-Auditing''] and
+        (Level=4 or Level=0) and EventID=4648]] and *[EventData[Data[@Name=''ProcessName'']!=''C:\Windows\System32\taskhost.exe'']]'
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/Wireless.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 5632
+      - 5633
+      Path: Security
+      XPath: '*[System[(EventID=5632 or EventID=5633)]]'
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/NTLM.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: Microsoft-Windows-Authentication/AuthenticationPolicyFailures-DomainController
+    Selections:
+    - Path: Microsoft-Windows-Authentication/AuthenticationPolicyFailures-DomainController
+      Providers:
+      - Microsoft-Windows-NTLM
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-NTLM'']]]'
+    - Path: Microsoft-Windows-Authentication/ProtectedUserFailures-DomainController
+      Providers:
+      - Microsoft-Windows-NTLM
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-NTLM'']]]'
+    - Path: Microsoft-Windows-NTLM/Operational
+      Providers:
+      - Microsoft-Windows-NTLM
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-NTLM'']]]'
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/Sysmon.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: Microsoft-Windows-Sysmon/Operational
+    Selections:
+    - Path: Microsoft-Windows-Sysmon/Operational
+      XPath: '*'
+- file: ./palantir/windows-event-forwarding/wef-subscriptions/Shares.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 5140
+      - 5142
+      - 5144
+      - 5145
+      - 5168
+      Path: Security
+      XPath: '*[System[(EventID=5140 or EventID=5142 or EventID=5144 or EventID=5145
+        or EventID=5168)]]'
+  - Attributes:
+      Id: '1'
+      Path: Microsoft-Windows-SMBClient/Operational
+    Selections:
+    - EventIDs:
+      - 30622
+      - 30624
+      Path: Microsoft-Windows-SMBClient/Operational
+      XPath: '*[System[(EventID=30622 or EventID=30624)]]'
+  - Attributes:
+      Id: '2'
+      Path: Microsoft-Windows-SMBClient/Security
+    Selections:
+    - Path: Microsoft-Windows-SMBClient/Security
+      XPath: '*'
+  - Attributes:
+      Id: '3'
+      Path: Microsoft-Windows-SMBServer/Security
+    Selections:
+    - Path: Microsoft-Windows-SMBServer/Security
+      XPath: '*'

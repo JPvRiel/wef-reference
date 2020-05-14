@@ -1,0 +1,46 @@
+Could not retrieve information about the Microsoft-Windows-Mobile-Broadband-Experience-SmsRouter provider. Error: The system cannot find the file specified..
+Could not retrieve information about the Microsoft-Windows-LanguageProfile provider. Error: The system cannot find the file specified..
+Could not retrieve information about the Microsoft-Windows-USB-CCID provider. Error: The system cannot find the file specified..
+Could not retrieve information about the Microsoft-Windows-EnrollmentPolicyWebService provider. Error: The system cannot find the file specified..
+Could not retrieve information about the Microsoft-Windows-StickyNotes provider. Error: The system cannot find the file specified..
+Could not retrieve information about the Microsoft-WS-Licensing provider. Error: The system cannot find the file specified..
+Could not retrieve information about the Microsoft-Windows-Bluetooth-BthLEEnum provider. Error: The specified resource type cannot be found in the image file..
+Could not retrieve information about the Microsoft-Windows-Ntfs-SQM provider. Error: The data is invalid..
+Could not retrieve information about the Microsoft-Windows-DirectWrite-FontCache provider. Error: The specified resource type cannot be found in the image file..
+Could not retrieve information about the Microsoft-Windows-Globalization-FontGroups provider. Error: The specified resource type cannot be found in the image file..
+Could not retrieve information about the Microsoft-Windows-ScmDisk0101 provider. Error: The system cannot find the file specified..
+Could not retrieve information about the Intel-SST-CFD-HDA provider. Error: The system cannot find the file specified..
+Could not retrieve information about the Microsoft-Windows-DirectWrite provider. Error: The specified resource type cannot be found in the image file..
+Could not retrieve information about the Microsoft-Windows-Narrator-Inproc provider. Error: The system cannot find the file specified..
+Could not retrieve information about the Microsoft-Windows-EnrollmentWebService provider. Error: The system cannot find the file specified..
+Could not retrieve information about the Microsoft-Windows-PersistentMemory-NvdimmN provider. Error: The system cannot find the file specified..
+Could not retrieve information about the Microsoft-Windows-NvdimmN provider. Error: The system cannot find the file specified..
+Could not retrieve information about the Microsoft-IE-ReadingView provider. Error: The system cannot find the file specified..
+Could not retrieve information about the Microsoft-Windows-RemoteAccess-MgmtClient provider. Error: The system cannot find the file specified..
+Could not retrieve information about the Microsoft-Windows-ServerEssentials-Deployment provider. Error: The system cannot find the file specified..
+Could not retrieve information about the Microsoft-Windows-IPAM provider. Error: The system cannot find the file specified..
+Could not retrieve information about the Microsoft-Windows-CloudStorageWizard provider. Error: The system cannot find the file specified..
+Could not retrieve information about the Microsoft-Windows-ClusterAwareUpdating-Management provider. Error: The system cannot find the file specified..
+Could not retrieve information about the Microsoft-Windows-PersistentMemory-INvdimm provider. Error: The system cannot find the file specified..
+Could not retrieve information about the Microsoft-Windows-Host-Network-Management provider. Error: The system cannot find the file specified..
+Could not retrieve information about the Microsoft-Windows-InstallUX provider. Error: The system cannot find the file specified..
+Could not retrieve information about the Microsoft-Antimalware-ShieldProvider provider. Error: The specified resource type cannot be found in the image file..
+Could not retrieve information about the Microsoft-Windows-PriResources-Deployment provider. Error: The specified resource type cannot be found in the image file..
+Could not retrieve information about the Microsoft-Windows-SystemSettingsThreshold provider. Error: The system cannot find the file specified..
+Could not retrieve information about the Microsoft-Windows-HostGuardianService-Client provider. Error: The system cannot find the file specified..
+Could not retrieve information about the Microsoft-Windows-ApplicationResourceManagementSystem provider. Error: The specified resource type cannot be found in the image file..
+Could not retrieve information about the Microsoft-Windows-WDAG-Service provider. Error: The system cannot find the file specified..
+Could not retrieve information about the Microsoft-Windows-PmemDisk provider. Error: The data is invalid..
+Could not retrieve information about the Microsoft-Windows-EmbeddedAppLauncher provider. Error: The system cannot find the file specified..
+Could not retrieve information about the NisDrvWFP Provider provider. Error: The specified resource type cannot be found in the image file..
+Could not retrieve information about the Microsoft-Windows-CredentialProviders provider. Error: The specified resource type cannot be found in the image file..
+Could not retrieve information about the Microsoft-Windows-Connected-Search provider. Error: The specified resource type cannot be found in the image file..
+Could not retrieve information about the Multimedia-HEVCDECODER provider. Error: The system cannot find the file specified..
+Could not retrieve information about the Microsoft-Windows-PersistentMemory-VirtualNvdimm provider. Error: The system cannot find the file specified..
+Could not retrieve information about the Microsoft-Windows-PrintDialogs provider. Error: The system cannot find the file specified..
+Could not retrieve information about the Microsoft-Windows-Globalization provider. Error: The specified resource type cannot be found in the image file..
+Could not retrieve information about the Microsoft-Windows-PrintDialogs3D provider. Error: The system cannot find the file specified..
+Could not retrieve information about the Microsoft-Windows-wmbclass provider. Error: The system cannot find the file specified..
+Could not retrieve information about the Microsoft-Windows-FailoverClustering-Manager provider. Error: The system cannot find the file specified..
+Could not retrieve information about the Microsoft-Windows-ScmBus provider. Error: The data is invalid..
+Could not retrieve information about the Microsoft-Windows-CredProvHost provider. Error: The data is invalid..

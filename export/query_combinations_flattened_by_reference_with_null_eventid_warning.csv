@@ -1,0 +1,18 @@
+Paths.Name,Paths.Providers.Name,Paths.Providers.Events.References.File,Paths.Providers.Events.References.QueryList.Id,Type,XPath
+Security,AD FS Auditing,./palantir/windows-event-forwarding/wef-subscriptions/ADFS.xml,0,Select,*[System[Provider[@Name='AD FS Auditing']]]
+Application,EMET,./microsoft/Appendix E - Annotated baseline subscription event query.xml,12,Select,*[System[Provider[@Name='EMET']]]
+Application,Windows Error Reporting,./microsoft/Appendix E - Annotated baseline subscription event query.xml,15,Select,"*[System[Provider[@Name='Windows Error Reporting']]] and (*[EventData[Data[3] =""APPCRASH""]])"
+Application,Duo Security,./palantir/windows-event-forwarding/wef-subscriptions/Duo-Security.xml,0,Select,*[System[Provider[@Name='Duo Security']]]
+Windows PowerShell,PowerShell,./palantir/windows-event-forwarding/wef-subscriptions/Powershell.xml,0,Select,*
+AD FS/Admin,AD FS,./palantir/windows-event-forwarding/wef-subscriptions/ADFS.xml,1,Select,*[System[Provider[@Name='AD FS']]]
+AD FS Tracing/Debug,,./palantir/windows-event-forwarding/wef-subscriptions/ADFS.xml,2,Select,*
+Duo Authentication for AD FS,,./palantir/windows-event-forwarding/wef-subscriptions/ADFS.xml,3,Select,*
+Microsoft-Windows-TPM-WMI,,./palantir/windows-event-forwarding/wef-subscriptions/WMI.xml,1,Select,*
+OAlerts,Microsoft Office 16 Alerts,./palantir/windows-event-forwarding/wef-subscriptions/Microsoft-Office.xml,0,Select,*
+OAlerts,Microsoft Office 14 Alerts,./palantir/windows-event-forwarding/wef-subscriptions/Microsoft-Office.xml,0,Select,*
+Microsoft-Windows-TerminalServices-Gateway/Admin,,./palantir/windows-event-forwarding/wef-subscriptions/Terminal-Services.xml,0,Select,*
+Microsoft-Windows-TerminalServices-Gateway/Operational,,./palantir/windows-event-forwarding/wef-subscriptions/Terminal-Services.xml,1,Select,*
+Microsoft-Windows-TerminalServices-ClientUSBDevices/Operational,Microsoft-Windows-TerminalServices-ClientUSBDevices,./palantir/windows-event-forwarding/wef-subscriptions/Terminal-Services.xml,3,Select,*
+Microsoft-Windows-TerminalServices-Printers/Operational,Microsoft-Windows-TerminalServices-Printers,./palantir/windows-event-forwarding/wef-subscriptions/Terminal-Services.xml,7,Select,*
+Autoruns,,./palantir/windows-event-forwarding/wef-subscriptions/Autoruns.xml,0,Select,*
+Microsoft-Windows-SMBClient/Security,,./palantir/windows-event-forwarding/wef-subscriptions/Shares.xml,2,Select,*

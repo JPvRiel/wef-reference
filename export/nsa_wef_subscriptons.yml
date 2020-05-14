@@ -1,0 +1,622 @@
+- file: ./nsacyber/Event-Forwarding-Guidance/Subscriptions/NT6/EMETLogs.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: Application
+    Selections:
+    - EventIDs:
+      - 1
+      - 2
+      Levels:
+      - '2'
+      - '3'
+      Path: Application
+      Providers:
+      - EMET
+      XPath: '*[System[Provider[@Name=''EMET''] and (Level=2 or Level=3) and (EventID=1
+        or EventID=2)]]'
+    Suppressions:
+    - Path: Application
+      Providers:
+      - EMET
+      XPath: '*[System[Provider[@Name=''EMET''] and (EventID=0)]]'
+- file: ./nsacyber/Event-Forwarding-Guidance/Subscriptions/NT6/AccountLocked.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 4740
+      Levels:
+      - '4'
+      - '0'
+      Path: Security
+      Providers:
+      - Microsoft-Windows-Security-Auditing
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-Security-Auditing''] and
+        (Level=4 or Level=0) and EventID=4740]]'
+- file: ./nsacyber/Event-Forwarding-Guidance/Subscriptions/NT6/KernelDriverDetect.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: Microsoft-Windows-CodeIntegrity/Operational
+    Selections:
+    - EventIDs:
+      - 3001
+      - 3002
+      - 3003
+      - 3004
+      - 3010
+      - 3023
+      Levels:
+      - '2'
+      - '3'
+      Path: Microsoft-Windows-CodeIntegrity/Operational
+      Providers:
+      - Microsoft-Windows-CodeIntegrity
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-CodeIntegrity''] and (Level=2
+        or Level=3) and (EventID=3001 or EventID=3002 or EventID=3003 or EventID=3004
+        or EventID=3010 or EventID=3023)]]'
+  - Attributes:
+      Id: '1'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 5038
+      - 6281
+      Levels:
+      - '0'
+      - '4'
+      Path: Security
+      Providers:
+      - Microsoft-Windows-Security-Auditing
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-Security-Auditing''] and
+        (Level=0 or Level=4) and (EventID=5038 or EventID=6281)]]'
+  - Attributes:
+      Id: '2'
+      Path: System
+    Selections:
+    - EventIDs:
+      - 219
+      Levels:
+      - '3'
+      Path: System
+      Providers:
+      - Microsoft-Windows-Kernel-PnP
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-Kernel-PnP''] and Level=3
+        and EventID=219]]'
+- file: ./nsacyber/Event-Forwarding-Guidance/Subscriptions/NT6/BsodErr.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: System
+    Selections:
+    - EventIDs:
+      - 1001
+      Levels:
+      - '2'
+      Path: System
+      Providers:
+      - Microsoft-Windows-WER-SystemErrorReporting
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-WER-SystemErrorReporting'']
+        and Level=2 and EventID=1001]]'
+- file: ./nsacyber/Event-Forwarding-Guidance/Subscriptions/NT6/AppCrash.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: Application
+    Selections:
+    - EventIDs:
+      - 1000
+      Levels:
+      - '2'
+      Path: Application
+      Providers:
+      - Application Error
+      XPath: '*[System[Provider[@Name=''Application Error''] and Level=2 and EventID=1000]]'
+    - EventIDs:
+      - 1002
+      Levels:
+      - '2'
+      Path: Application
+      Providers:
+      - Application Hang
+      XPath: '*[System[Provider[@Name=''Application Hang''] and Level=2 and EventID=1002]]'
+    - EventIDs:
+      - 1001
+      Levels:
+      - '4'
+      Path: Application
+      Providers:
+      - Windows Error Reporting
+      XPath: '*[System[Provider[@Name=''Windows Error Reporting''] and Level=4 and
+        EventID=1001]]'
+- file: ./nsacyber/Event-Forwarding-Guidance/Subscriptions/NT6/ServiceManager.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: System
+    Selections:
+    - EventIDs:
+      - 7022
+      - 7023
+      - 7024
+      - 7026
+      - 7031
+      - 7032
+      - 7034
+      Levels:
+      - '1'
+      - '2'
+      - '3'
+      - '4'
+      - '0'
+      Path: System
+      Providers:
+      - Service Control Manager
+      XPath: '*[System[Provider[@Name=''Service Control Manager''] and (Level=1  or
+        Level=2 or Level=3 or Level=4 or Level=0) and (EventID=7022 or EventID=7023
+        or EventID=7024 or EventID=7026 or EventID=7031 or EventID=7032 or EventID=7034)]]'
+    - EventIDs:
+      - 7045
+      Levels:
+      - '4'
+      Path: System
+      Providers:
+      - Service Control Manager
+      XPath: '*[System[Provider[@Name=''Service Control Manager''] and Level=4 and
+        EventID=7045]]'
+- file: ./nsacyber/Event-Forwarding-Guidance/Subscriptions/NT6/USBDetection.xml
+  queries:
+  - Attributes:
+      Id: '0'
+    Selections:
+    - EventIDs:
+      - 400
+      - 410
+      Levels:
+      - '4'
+      Path: Microsoft-Windows-Kernel-PnP/Configuration
+      Providers:
+      - Microsoft-Windows-Kernel-PnP
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-Kernel-PnP''] and Level=4
+        and (EventID=400 or EventID=410)]] and
+
+        *[EventData[Data[@Name=''DriverName'']="usbstor.inf"]]
+
+        '
+- file: ./nsacyber/Event-Forwarding-Guidance/Subscriptions/NT6/WhitelistingLogs.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: Application
+    Selections:
+    - EventIDs:
+      - 8003
+      - 8004
+      Levels:
+      - '2'
+      - '3'
+      Path: Microsoft-Windows-AppLocker/EXE and DLL
+      Providers:
+      - Microsoft-Windows-AppLocker
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-AppLocker''] and (Level=2
+        or Level=3) and (EventID=8003 or EventID=8004)]]'
+    - EventIDs:
+      - 8006
+      - 8007
+      Levels:
+      - '2'
+      - '3'
+      Path: Microsoft-Windows-AppLocker/MSI and Script
+      Providers:
+      - Microsoft-Windows-AppLocker
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-AppLocker''] and (Level=2
+        or Level=3) and (EventID=8006 or EventID=8007)]]'
+    - EventIDs:
+      - 865
+      - 866
+      - 867
+      - 868
+      - 882
+      Levels:
+      - '3'
+      Path: Application
+      Providers:
+      - Microsoft-Windows-SoftwareRestrictionPolicies
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-SoftwareRestrictionPolicies'']
+        and Level=3 and (EventID=865 or EventID=866 or EventID=867 or EventID=868
+        or EventID=882)]]'
+- file: ./nsacyber/Event-Forwarding-Guidance/Subscriptions/NT6/ExpCreds.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 4648
+      Levels:
+      - '4'
+      - '0'
+      Path: Security
+      Providers:
+      - Microsoft-Windows-Security-Auditing
+      XPath: "\n          *[System[Provider[@Name='Microsoft-Windows-Security-Auditing']\
+        \ and (Level=4 or Level=0) and EventID=4648]] \n\t\tand \n\t*[EventData[Data[@Name='ProcessName']!='C:\\\
+        Windows\\System32\\taskhost.exe']]\n\n    "
+- file: ./nsacyber/Event-Forwarding-Guidance/Subscriptions/NT6/WinFAS.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: Microsoft-Windows-Windows Firewall With Advanced Security/Firewall
+    Selections:
+    - EventIDs:
+      - 2004
+      - 2005
+      - 2006
+      - 2009
+      - 2033
+      Levels:
+      - '2'
+      - '4'
+      - '0'
+      Path: Microsoft-Windows-Windows Firewall With Advanced Security/Firewall
+      Providers:
+      - Microsoft-Windows-Windows Firewall With Advanced Security
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-Windows Firewall With Advanced
+        Security''] and (Level=2 or Level=4 or Level=0) and (EventID=2004 or EventID=2005
+        or EventID=2006 or EventID=2009 or EventID=2033)]]'
+- file: ./nsacyber/Event-Forwarding-Guidance/Subscriptions/NT6/GrpPolicyErr.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: System
+    Selections:
+    - EventIDs:
+      - 1125
+      - 1127
+      - 1129
+      Levels:
+      - '2'
+      Path: System
+      Providers:
+      - Microsoft-Windows-GroupPolicy
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-GroupPolicy''] and Level=2
+        and (EventID=1125 or EventID=1127 or EventID=1129)]]'
+- file: ./nsacyber/Event-Forwarding-Guidance/Subscriptions/NT6/PrintDetect.xml
+  queries:
+  - Attributes:
+      Id: '0'
+    Selections:
+    - EventIDs:
+      - 307
+      Levels:
+      - '4'
+      Path: Microsoft-Windows-PrintService/Operational
+      Providers:
+      - Microsoft-Windows-PrintService
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-PrintService''] and Level=4
+        and EventID=307]]
+
+        '
+- file: ./nsacyber/Event-Forwarding-Guidance/Subscriptions/NT6/MsiPackages.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: Application
+    Selections:
+    - EventIDs:
+      - 1022
+      - 1033
+      Path: Application
+      Providers:
+      - MsiInstaller
+      XPath: '*[System[Provider[@Name=''MsiInstaller''] and (EventID=1022 or EventID=1033)]]'
+    - EventIDs:
+      - 2
+      Levels:
+      - '0'
+      Path: Setup
+      Providers:
+      - Microsoft-Windows-Servicing
+      XPath: "*[System[Provider[@Name='Microsoft-Windows-Servicing'] and EventID=2\
+        \ and Level=0]]\n\tand\n\t*[UserData[CbsPackageChangeState[IntendedPackageState='Installed']]]\n\
+        \t"
+    - EventIDs:
+      - 903
+      - 904
+      Path: Microsoft-Windows-Application-Experience/Program-Inventory
+      Providers:
+      - Microsoft-Windows-Application-Experience
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-Application-Experience'']
+        and (EventID=903 or EventID=904)]]'
+    - EventIDs:
+      - 905
+      - 906
+      Path: Microsoft-Windows-Application-Experience/Program-Inventory
+      Providers:
+      - Microsoft-Windows-Application-Experience
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-Application-Experience'']
+        and (EventID=905 or EventID=906)]]'
+    - EventIDs:
+      - 907
+      - 908
+      Path: Microsoft-Windows-Application-Experience/Program-Inventory
+      Providers:
+      - Microsoft-Windows-Application-Experience
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-Application-Experience'']
+        and (EventID=907 or EventID=908)]]'
+    - EventIDs:
+      - 800
+      Path: Microsoft-Windows-Application-Experience/Program-Inventory
+      Providers:
+      - Microsoft-Windows-Application-Experience
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-Application-Experience'']
+        and EventID=800]]'
+  - Attributes:
+      Id: '1'
+      Path: System
+    Selections:
+    - EventIDs:
+      - 19
+      Path: System
+      Providers:
+      - Microsoft-Windows-WindowsUpdateClient
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-WindowsUpdateClient''] and
+        EventID=19]]'
+    - EventIDs:
+      - 6
+      Levels:
+      - '4'
+      - '0'
+      Path: System
+      Providers:
+      - Microsoft-Windows-FilterManager
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-FilterManager''] and EventID=6
+        and (Level=4 or Level=0)]]'
+- file: ./nsacyber/Event-Forwarding-Guidance/Subscriptions/NT6/LogDel.xml
+  queries:
+  - Attributes:
+      Id: '0'
+    Selections:
+    - EventIDs:
+      - 1102
+      Levels:
+      - '4'
+      Path: Security
+      Providers:
+      - Microsoft-Windows-Eventlog
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-Eventlog''] and Level=4
+        and EventID=1102]]'
+    - EventIDs:
+      - 104
+      Levels:
+      - '4'
+      Path: System
+      Providers:
+      - Microsoft-Windows-Eventlog
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-Eventlog''] and Level=4
+        and EventID=104]]'
+- file: ./nsacyber/Event-Forwarding-Guidance/Subscriptions/NT6/AccountLogons.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 4624
+      - 4625
+      Levels:
+      - '4'
+      - '0'
+      Path: Security
+      Providers:
+      - Microsoft-Windows-Security-Auditing
+      XPath: "\n          *[System[Provider[@Name='Microsoft-Windows-Security-Auditing']\
+        \ and (Level=4 or Level=0) and (EventID=4624 or EventID=4625)]]\n        \
+        \  and\n         *[EventData[Data[@Name='AuthenticationPackageName'] != 'Kerberos']]\n\
+        \          and\n          *[EventData[Data[@Name='TargetUserName'] != 'ANONYMOUS\
+        \ LOGON']]\n    "
+    - EventIDs:
+      - 4624
+      Levels:
+      - '4'
+      - '0'
+      Path: Security
+      Providers:
+      - Microsoft-Windows-Security-Auditing
+      XPath: "\n\t\t*[System[Provider[@Name='Microsoft-Windows-Security-Auditing']\n\
+        \t\t\tand (Level=4 or Level=0) and EventID=4624]]\n\t\tand\n\t\t*[EventData[Data[@Name='LogonType']='3']]\n\
+        \t\tand\n\t\t*[EventData[Data[@Name='AuthenticationPackageName']='NTLM']]\n\
+        \t\tand\n\t\t*[EventData[Data[@Name='TargetUserName']!='ANONYMOUS LOGON']]\n\
+        \t\tand\n\t\t*[EventData[Data[@Name='TargetDomainName']!='TEST']]\n\t"
+    - EventIDs:
+      - 4625
+      Levels:
+      - '4'
+      - '0'
+      Path: Security
+      Providers:
+      - Microsoft-Windows-Security-Auditing
+      XPath: "\n\t\t*[System[Provider[@Name='Microsoft-Windows-Security-Auditing']\
+        \ \n\t\t\tand (Level=4 or Level=0) and EventID=4625]]\n\t\tand\n\t\t*[EventData[Data[@Name='LogonType']='3']]\n\
+        \t\tand\n\t\t*[EventData[Data[@Name='AuthenticationPackageName']='NTLM']]\n\
+        \t\tand\n\t\t*[EventData[Data[@Name='TargetUserName']!='ANONYMOUS LOGON']]\n\
+        \t\tand\n\t\t*[EventData[Data[@Name='TargetDomainName']!='TEST']]\n\t"
+    - EventIDs:
+      - 4624
+      - 4634
+      Levels:
+      - '4'
+      - '0'
+      Path: Security
+      Providers:
+      - Microsoft-Windows-Security-Auditing
+      XPath: "\n\t*[System[Provider[@Name='Microsoft-Windows-Security-Auditing'] \n\
+        \t\tand (Level=4 or Level=0) and (EventID=4624 or EventID=4634)]]\n\tand\n\
+        \t*[EventData[Data[@Name='LogonType']='10']]\n\tand\n\t(\n\t\t*[EventData[Data[5]='10']]\n\
+        \t\tor\n\t\t*[EventData[Data[@Name='AuthenticationPackageName']='Negotiate']]\n\
+        \t)\n\t"
+    Suppressions:
+    - EventIDs:
+      - 4624
+      - 4625
+      - 4634
+      Levels:
+      - '4'
+      - '0'
+      Path: Security
+      Providers:
+      - Microsoft-Windows-Security-Auditing
+      XPath: "\n\t*[System[Provider[@Name='Microsoft-Windows-Security-Auditing'] \n\
+        \t\tand (Level=4 or Level=0) and (EventID=4624 or EventID=4625 or EventID=4634)]]\n\
+        \tand\n\t\t*[EventData[\n\t\t(\n\t\t\t(Data[@Name='LogonType']='5' or Data[@Name='LogonType']='0')\
+        \ \n\t\t\tor\n\t\t\tData[@Name='TargetUserName']='ANONYMOUS LOGON'\n\t\t\t\
+        or\n\t\t\tData[@Name='TargetUserSID']='S-1-5-18'\n\t\t)\n]]\n\n\t"
+- file: ./nsacyber/Event-Forwarding-Guidance/Subscriptions/NT6/WinUpdateErr.xml
+  queries:
+  - Attributes:
+      Id: '0'
+    Selections:
+    - EventIDs:
+      - 20
+      - 24
+      - 25
+      - 31
+      - 34
+      - 35
+      Levels:
+      - '2'
+      Path: Microsoft-Windows-WindowsUpdateClient/Operational
+      Providers:
+      - Microsoft-Windows-WindowsUpdateClient
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-WindowsUpdateClient''] and
+        Level=2 and (EventID=20 or EventID=24 or EventID=25 or EventID=31 or EventID=34
+        or EventID=35)]]'
+    - EventIDs:
+      - 1009
+      Levels:
+      - '0'
+      Path: Setup
+      Providers:
+      - Microsoft-Windows-Servicing
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-Servicing''] and Level=0
+        and EventID=1009]]'
+- file: ./nsacyber/Event-Forwarding-Guidance/Subscriptions/NT6/UserToPriv.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: Security
+    Selections:
+    - EventIDs:
+      - 4728
+      - 4732
+      - 4756
+      Path: Security
+      Providers:
+      - Microsoft-Windows-Security-Auditing
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-Security-Auditing''] and
+        (EventID=4728 or EventID=4732 or EventID=4756)]]'
+    - EventIDs:
+      - 4735
+      Path: Security
+      Providers:
+      - Microsoft-Windows-Security-Auditing
+      XPath: '*[System[Provider[@Name=''Microsoft-Windows-Security-Auditing''] and
+        EventID=4735]]'
+- file: ./nsacyber/Event-Forwarding-Guidance/Subscriptions/NT6/DefenderErr.xml
+  queries:
+  - Attributes:
+      Id: '0'
+      Path: Microsoft-Windows-Windows Defender/Operational
+    Selections:
+    - EventIDs:
+      - 1005
+      - 1006
+      - 1008
+      - 1010
+      - 2001
+      - 2003
+      - 2004
+      - 3002
+      - 5008
+      Levels:
+      - '2'
+      - '3'
+      Path: Microsoft-Windows-Windows Defender/Operational
+      Providers:
+      - Windows Defender
+      XPath: '*[System[Provider[@Name=''Windows Defender''] and (Level=2 or Level=3)
+        and (EventID=1005 or EventID=1006 or EventID=1008 or EventID=1010 or EventID=2001
+        or EventID=2003 or EventID=2004 or EventID=3002 or EventID=5008)]]'
+- file: ./nsacyber/Event-Forwarding-Guidance/Subscriptions/NT6/WifiActivity.xml
+  queries:
+  - Attributes:
+      Id: '0'
+    Selections:
+    - EventIDs:
+      - 8000
+      - 8001
+      - 8003
+      - 8011
+      - 11000
+      - 11001
+      Levels:
+      - '4'
+      Path: Microsoft-Windows-WLAN-AutoConfig/Operational
+      Providers:
+      - Microsoft-Windows-WLAN-AutoConfig
+      XPath: "\n\t*[System[Provider[@Name='Microsoft-Windows-WLAN-AutoConfig'] and\
+        \ (EventID=8000 or EventID=8001 or EventID=8003 or EventID=8011 or EventID=11000\
+        \ or EventID=11001) and Level=4]]\n"
+    - EventIDs:
+      - 8002
+      - 11002
+      Levels:
+      - '2'
+      Path: Microsoft-Windows-WLAN-AutoConfig/Operational
+      Providers:
+      - Microsoft-Windows-WLAN-AutoConfig
+      XPath: "\n\t*[System[Provider[@Name='Microsoft-Windows-WLAN-AutoConfig'] and\
+        \ (EventID=8002 or EventID=11002) and Level=2 ]]\n\n"
+    - EventIDs:
+      - 11004
+      - 11005
+      - 11010
+      - 11006
+      Levels:
+      - '2'
+      - '4'
+      Path: Microsoft-Windows-WLAN-AutoConfig/Operational
+      Providers:
+      - Microsoft-Windows-WLAN-AutoConfig
+      XPath: "\n\t*[System[Provider[@Name='Microsoft-Windows-WLAN-AutoConfig'] and\
+        \ (EventID=11004 or EventID=11005 or EventID=11010 or EventID=11006) and (Level=2\
+        \ or Level=4)]]\n\n"
+    - EventIDs:
+      - 12011
+      - 12012
+      - 12013
+      Levels:
+      - '2'
+      - '4'
+      Path: Microsoft-Windows-WLAN-AutoConfig/Operational
+      Providers:
+      - Microsoft-Windows-WLAN-AutoConfig
+      XPath: "\t\n\t*[System[Provider[@Name='Microsoft-Windows-WLAN-AutoConfig'] and\
+        \ (EventID=12011 or EventID=12012 or EventID=12013) and (Level=2 or Level=4)]]\n\
+        \n"
+  - Attributes:
+      Id: '1'
+    Selections:
+    - EventIDs:
+      - 10000
+      - 10001
+      Levels:
+      - '4'
+      Path: Microsoft-Windows-NetworkProfile/Operational
+      Providers:
+      - Microsoft-Windows-NetworkProfile
+      XPath: "\n\t*[System[Provider[@Name='Microsoft-Windows-NetworkProfile'] and\
+        \ (EventID=10000 or EventID=10001) and Level=4]]\n\t"
