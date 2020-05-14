@@ -38,7 +38,7 @@ The output files of the script are placed in `export`.
 
 ## Enriching event queries with event metadata
 
-The subfolder [`Windows Event Metadata`](./Windows Event Metadata/) contains a PowerShell script to exporting event providers and event metadata.
+The subfolder [`Windows Event Metadata`](./Windows%20Event%20Metadata/) contains a PowerShell script to exporting event providers and event metadata.
 
 The output of the script is imported by `compare_wef.py` to enrich and improve enumerating the event IDs that the various XPath queries would explicitly or implicitly select or suppress.
 
@@ -93,12 +93,12 @@ print(provider_metadata[provider_metadata['LogLinks.Count'] == provider_metadata
 And the result for the most linked provier names was:
 
 | Name | LogLinks.Name | LogLinks.Count |
-| :- | :- | :- | :- |
-| Microsoft-Windows-Application-Experience | ['Microsoft-Windows-Application-Experience/Compatibility-Infrastructure-Debug', 'Microsoft-Windows-Application-Experience/Program-Compatibility-Assistant/Analytic', 'Microsoft-Windows-Application-Experience/Program-Compatibility-Assistant/Trace', 'Microsoft-Windows-Application-Experience/Program-Compatibility-Assistant', 'Microsoft-Windows-Application-Experience/Program-Telemetry', 'Microsoft-Windows-Application-Experience/Program-Inventory', 'Microsoft-Windows-Application-Experience/Steps-Recorder', 'Microsoft-Windows-Application-Experience/Program-Compatibility-Troubleshooter'] | 8 |
-| Microsoft-Windows-MF | ['MF_MediaFoundationDeviceProxy', 'MF_MediaFoundationDeviceMFT', 'MediaFoundationPipeline', 'MediaFoundationContentProtection', 'MediaFoundationAsyncWrapper', 'MediaFoundationDS', 'MediaFoundationSrcPrefetch', 'MediaFoundationMP4'] | 8 |
-| Microsoft-Windows-SMBClient | ['Microsoft-Windows-SMBClient/HelperClassDiagnostic', 'Microsoft-Windows-SMBClient/ObjectStateDiagnostic', 'Microsoft-Windows-SMBClient/Operational', 'Microsoft-Windows-SMBClient/Analytic', 'Microsoft-Windows-SmbClient/Diagnostic', 'Microsoft-Windows-SmbClient/Connectivity', 'Microsoft-Windows-SmbClient/Security', 'Microsoft-Windows-SmbClient/Audit'] | 8 |
-| Microsoft-Windows-Win32k | ['Microsoft-Windows-Win32k/Tracing', 'Microsoft-Windows-Win32k/UIPI', 'Microsoft-Windows-Win32k/Power', 'Microsoft-Windows-Win32k/Concurrency', 'Microsoft-Windows-Win32k/Render', 'Microsoft-Windows-Win32k/Messages', 'Microsoft-Windows-Win32k/Contention', 'Microsoft-Windows-Win32k/Operational'] | 8 |
-| Microsoft-Windows-Shell-AuthUI | ['Microsoft-Windows-Authentication User Interface/Operational', 'Microsoft-Windows-Shell-AuthUI-CredUI/Diagnostic', 'Microsoft-Windows-Shell-AuthUI-Logon/Diagnostic', 'Microsoft-Windows-Shell-AuthUI-Common/Diagnostic', 'Microsoft-Windows-Shell-AuthUI-Shutdown/Diagnostic', 'Microsoft-Windows-Shell-AuthUI-CredentialProviderUser/Diagnostic', 'Microsoft-Windows-Shell-AuthUI-BootAnim/Diagnostic', 'Microsoft-Windows-Shell-AuthUI-LogonUI/Diagnostic'] | 8 |
+|:-----|:--------------|:---------------|
+| Microsoft-Windows-Application-Experience | 'Microsoft-Windows-Application-Experience/Compatibility-Infrastructure-Debug', 'Microsoft-Windows-Application-Experience/Program-Compatibility-Assistant/Analytic', 'Microsoft-Windows-Application-Experience/Program-Compatibility-Assistant/Trace', 'Microsoft-Windows-Application-Experience/Program-Compatibility-Assistant', 'Microsoft-Windows-Application-Experience/Program-Telemetry', 'Microsoft-Windows-Application-Experience/Program-Inventory', 'Microsoft-Windows-Application-Experience/Steps-Recorder', 'Microsoft-Windows-Application-Experience/Program-Compatibility-Troubleshooter' | 8 |
+| Microsoft-Windows-MF | 'MF_MediaFoundationDeviceProxy', 'MF_MediaFoundationDeviceMFT', 'MediaFoundationPipeline', 'MediaFoundationContentProtection', 'MediaFoundationAsyncWrapper', 'MediaFoundationDS', 'MediaFoundationSrcPrefetch', 'MediaFoundationMP4' | 8 |
+| Microsoft-Windows-SMBClient | 'Microsoft-Windows-SMBClient/HelperClassDiagnostic', 'Microsoft-Windows-SMBClient/ObjectStateDiagnostic', 'Microsoft-Windows-SMBClient/Operational', 'Microsoft-Windows-SMBClient/Analytic', 'Microsoft-Windows-SmbClient/Diagnostic', 'Microsoft-Windows-SmbClient/Connectivity', 'Microsoft-Windows-SmbClient/Security', 'Microsoft-Windows-SmbClient/Audit' | 8 |
+| Microsoft-Windows-Win32k | 'Microsoft-Windows-Win32k/Tracing', 'Microsoft-Windows-Win32k/UIPI', 'Microsoft-Windows-Win32k/Power', 'Microsoft-Windows-Win32k/Concurrency', 'Microsoft-Windows-Win32k/Render', 'Microsoft-Windows-Win32k/Messages', 'Microsoft-Windows-Win32k/Contention', 'Microsoft-Windows-Win32k/Operational' | 8 |
+| Microsoft-Windows-Shell-AuthUI | 'Microsoft-Windows-Authentication User Interface/Operational', 'Microsoft-Windows-Shell-AuthUI-CredUI/Diagnostic', 'Microsoft-Windows-Shell-AuthUI-Logon/Diagnostic', 'Microsoft-Windows-Shell-AuthUI-Common/Diagnostic', 'Microsoft-Windows-Shell-AuthUI-Shutdown/Diagnostic', 'Microsoft-Windows-Shell-AuthUI-CredentialProviderUser/Diagnostic', 'Microsoft-Windows-Shell-AuthUI-BootAnim/Diagnostic', 'Microsoft-Windows-Shell-AuthUI-LogonUI/Diagnostic' | 8 |
 
 ## References
 
