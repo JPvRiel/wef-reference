@@ -1,0 +1,6 @@
+[submodule "nsacyber/Event-Forwarding-Guidance"]
+	path = nsacyber/Event-Forwarding-Guidance
+	url = https://github.com/nsacyber/Event-Forwarding-Guidance
+[submodule "palantir/windows-event-forwarding"]
+	path = palantir/windows-event-forwarding
+	url = https://github.com/palantir/windows-event-forwarding

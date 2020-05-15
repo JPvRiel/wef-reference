@@ -2,7 +2,33 @@
 
 This project collects and compares various references related to Windows Event Forwarding (WEF), which I also refer to as Windows Event Log Collection (WELC).
 
+`wef-reference.xlsx` provides worksheets that cross-reference events with XML event query lists published by Microsoft, the NSA and Palantir.
+
 It's intended to remove some of the tedium of comparing and deciding which events should or should not be collected for cyber security related event forwarding subscriptions.
+
+- While there's much room for improvement (see "Limitations" and "Future work"), it's currently a usable consolation of which event ID's to focus on.
+- E.g. a minimum priority of events to collect would be where 2 or more references recommend it, with special attention to the Microsoft Baseline set.
+- It helps showcase that important security events are not simply located in the Security event log path.
+- Futhermore, simply collecting all events from the Security log will likely overburden log collection / SIEM platforms.
+
+## Updating references
+
+### Updating Windows event metadata
+
+`wef-reference.xlsx` can be updated with sample event metadata from your own system. This would require running scripts in the following order
+
+1. `Get-EventMetadata.ps1`: execute from `Windows Event Metadata`.
+2. `metadata.py`: execute from `Windows Event Metadata`.
+3. `compare_wef`: execute from project root. It sources metadata from `Windows Event Metadata`.
+4. Open `wef-reference.xlsx` and re-fresh data.
+
+Note, Excel's Power Query data source `File.Contents()` function doesn't currently support relative paths, but a common workaround has been put in place to calculate the absolute path needed. So it should be possible to refresh the data without having to re-import it manually.
+
+### Updating event query / subscription references
+
+The [`palantir`](./palantir/) and [`nsacyber`](./nsacyber/) sources are added as git submodules, so when any upstream changes occur in those projects, the submodules need to be rerun and steps 3 and 4 above  
+
+The [`microsoft`](./microsoft/) query lists are localted in the Appendices  of the documentation site (a markdown file) and manually extracted into this repo.
 
 ## Dependencies
 
@@ -54,7 +80,22 @@ This "best-effort" project has the following known limitations:
   - Some of the technologies referenced in queries were not deployed on the sample system and could result in incomplete event enumeration or nullified metadata lookups for some queries.
   - The current sample of metadata was extracted from a Windows 10 1909 system.
   - It's preferable to run the PowerShell event provider and metadata script on the target environment and regenerate the metadata.
+  - Regratably, I only located the [Windows-Event-Log-Messages](https://github.com/nsacyber/Windows-Event-Log-Messages) resource after writing my own simple metadata extract process.
+    - `WELM` it's likely a superior way to extract the event metadata.
 - Each subscription source core reference directory is hardcoded in the script and adding more sources requires modifying the script. This could be parameterised in future.
+
+### Future work
+
+Obviously it'd be nice to see this extended with other published guidance / query / subscription examples. In addition to that, the following cross-referencing would be good:
+
+- Refactor `compare_wef` to make use of `WELM`, as per [Windows-Event-Log-Messages](https://github.com/nsacyber/Windows-Event-Log-Messages), instead of own custom solution in `Windows Event Metadata`.
+- [Appendix L: Events to Monitor](https://docs.microsoft.com/en-us/windows-server/identity/ad-ds/plan/appendix-l--events-to-monitor) is not yet compared
+  - But it was not published as a Query List/subscription...
+  - It adds a "Potential Criticality" rating for events.
+- Search for a usable data reference source (ie. CSV or JSON) that allows mapping event IDs to specific windows audit policy settings and cross-reference that.
+- Search for a reference related to advanced object access auditing.
+  - Specifically find extended guidance on which objects (e.g. file, registry) should have System ACLs (SACLs) set.
+  - Object access auditing is either very noisy (global/basic), or requires onerous work creating System ACLs to set auditing per object/container (advanced).
 
 ## Observations
 
@@ -117,6 +158,8 @@ And the result for the most linked provier names was:
 - NSA:
   - [NSA Event Forwarding Guidance](https://github.com/nsacyber/Event-Forwarding-Guidance) provides example subscriptions and custom windows event views. It appears to split subscriptions into specific detection use-cases and scenarios.
   - [Spotting the Adversary with Windows Event Log Monitoring](https://apps.nsa.gov/iaarchive/library/reports/spotting-the-adversary-with-windows-event-log-monitoring.cfm) is the paper presenting the NSA approach.
+  - [Windows-Event-Log-Messages](https://github.com/nsacyber/Windows-Event-Log-Messages)
+    - Provides scripts to automate extracting windows event message metadata.
 
 ### Other references
 
@@ -125,6 +168,8 @@ General background, tools and methods related to windows eventing:
 - [MSDN Wecutil.exe](https://msdn.microsoft.com/en-us/library/bb736545(v=vs.85).aspx).
 - [Event Queries and Event XML](https://docs.microsoft.com/en-us/previous-versions/bb399427(v=vs.90))
 - [Technet Get-WinEvent](https://technet.microsoft.com/en-us/library/hh849682.aspx).
+- [Best practice for configuring EventLog forwarding in Windows Server 2012 R2](https://support.microsoft.com/en-us/help/4494356/best-practice-eventlog-forwarding-performance).
+  - Note, "Improves Event Forwarding scalability to ensure thread safety and increase resources." references KB4537806 and KB4537818 to improve handling more event forwarding subscribers per collection server.
 - [Windows Event Forwarding: export and import subscriptions](http://godlessheathenmemoirs.blogspot.co.za/2013/05/windows-event-forwarding-export-and.html).
 - [Creating custom event forwarding logs](https://blogs.technet.microsoft.com/russellt/2016/05/18/creating-custom-windows-event-forwarding-logs/)
 - [psEventLogWatcher](https://archive.codeplex.com/?p=pseventlogwatcher) has useful code samples for dealing with forwarded event bookmarks.
@@ -144,3 +189,21 @@ Security event description resources:
 - [Windows 10 and Windows Server 2016 security auditing and monitoring reference](https://www.microsoft.com/en-us/download/details.aspx?id=52630)
 - [Description of security events in Windows 7 and in Windows Server 2008 R2](https://support.microsoft.com/en-us/help/977519/description-of-security-events-in-windows-7-and-in-windows-server-2008)
 - [Getting a Provider's Metadata](https://docs.microsoft.com/en-gb/windows/win32/wes/getting-a-provider-s-metadata-#getting-a-providers-metadata)
+
+## Licenses
+
+### License for this repository
+
+This project more or less matches the licenses of the sources it incorporates:
+
+- Data and information licensed under Creative Commons [Attribution 4.0 International (CC BY 4.0)](./LICENSE.txt)
+- Code (scripts) under the MIT License (./LICENSE-CODE.txt).
+
+### Related license for primary references included here
+
+Licence files are included within each source directory.
+| Reference directory | License |
+| - | - |
+| [`microsoft`](./microsoft/) | Creative Commons [Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/) and "MIT License" for code. |
+| [`nsacyber`](./nsacyber/) | Creative Commons [CC0 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/) |
+| [`palantir`](./palantir/) | "MIT License" |

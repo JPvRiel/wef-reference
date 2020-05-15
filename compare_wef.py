@@ -23,12 +23,12 @@ parser = argparse.ArgumentParser(
 parser.add_argument(
   '-m', '--metadata', nargs='*',
   help='specify which metadata to include in enrichment (using this flag with nothing imples no metadata).',
-  choices=['descrption', 'keywords', 'task', 'opcode', 'level', 'level.value'],
-  default=['descrption', 'keywords', 'task', 'opcode', 'level', 'level.value']
+  choices=['description', 'keywords', 'task', 'opcode', 'level', 'level.value'],
+  default=['description', 'keywords', 'task', 'opcode', 'level', 'level.value']
 )
 parser.add_argument(
   '-d', '--metadata-full-description', action='store_true',
-  help='By default the \'descrption\' metadata for events will be truncated upon the first newline. This enables retaining the full event description.',
+  help='By default the \'description\' metadata for events will be truncated upon the first newline. This enables retaining the full event description.',
   default=False
 )
 parser.add_argument(
@@ -54,7 +54,7 @@ logger.addHandler(handler)
 ## Gather and check other arguments
 # Map choices to expected keys produced during importing event metadata
 m_choices_map = {
-  'descrption': 'Description',
+  'description': 'Description',
   'description-full': 'Description',
   'keywords': 'Keywords',
   'task': 'Task',

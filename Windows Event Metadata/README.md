@@ -6,11 +6,17 @@ Running both the PowerShell and Python script is suggested to update and overwri
 
 ## Extracting windows event metadata
 
-This folder contains a simple PowerShell script, `Get-EventMetadata.ps1`, which can to extract event provider and event ID metadata via `Get-WinEvent` `-ListProvider`, and then serialises / dumps the metadata output as a compressed JSON file, `.\Extracted\EventMetadata.json.zip`.
+This folder contains a simple PowerShell script, `Get-EventMetadata.ps1`, which can to extract event provider and event ID metadata via `Get-WinEvent -ListProvider '*'`, and then serialises / dumps the metadata output as a compressed JSON file, `.\Extracted\EventMetadata.json.zip`.
 
 Accuracy will depend on the source windows system being run, given different Windows versions and different install packages/optional components add providers and events.
 
 `Get-EventMetadata.ps1` was tested on PowerShell 5.1 and 7.0. Older versions might not work.
+
+Note, `Get-WinEvent -ListProvider '*'` and dumping to JSON a better alternative for data analysis compared to extracting it using `wecutil`, one provider at a time in plaintext format. E.g.:
+
+```console
+wevtutil gp Microsoft-Windows-Security-Auditing /ge /gm:true
+```
 
 ### Provider metadata errors are common
 
