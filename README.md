@@ -83,6 +83,7 @@ This "best-effort" project has the following known limitations:
   - Regratably, I only located the [Windows-Event-Log-Messages](https://github.com/nsacyber/Windows-Event-Log-Messages) resource after writing my own simple metadata extract process.
     - `WELM` it's likely a superior way to extract the event metadata.
 - Each subscription source core reference directory is hardcoded in the script and adding more sources requires modifying the script. This could be parameterised in future.
+- Keyword metadata for the Microsoft-Windows-Security-Auditing provider cannot be simply extracted via the Provider object returned by `Get-WinEvent`.
 
 ### Future work
 
@@ -149,7 +150,6 @@ And the result for the most linked provier names was:
   - [Use Windows Event Forwarding to help with intrusion detection](https://docs.microsoft.com/en-us/windows/security/threat-protection/use-windows-event-forwarding-to-assist-in-intrusion-detection) is Microsoft's guidance on setting up WEF with a "basline" and extra "suspect" set of events to collect.
   - [Appendix L: Events to Monitor](https://docs.microsoft.com/en-us/windows-server/identity/ad-ds/plan/appendix-l--events-to-monitor) is Microsoft's recommendation on events to monitor Active Directory for Signs of Compromise. It's based on the following reference:
     - [Monitoring Active Directory for Signs of Compromise](https://docs.microsoft.com/en-us/windows-server/identity/ad-ds/plan/security-best-practices/monitoring-active-directory-for-signs-of-compromise)
-  - [Best practice for configuring EventLog forwarding in Windows Server 2016 and Windows Server 2012 R2](https://support.microsoft.com/en-us/help/4494356/best-practice-eventlog-forwarding-performance)
 - Palantir:
   - [Palantir: Windows Event Forwarding Guidance](https://github.com/palantir/windows-event-forwarding) provides a more comprehensive public reference example for configuring WEF (Windows Event Forwarding).
     - Palantir’s WEF library contains a curated series of subscriptions to examine and adapt, combining recommendations from Microsoft and the NSA.
@@ -168,6 +168,7 @@ General background, tools and methods related to windows eventing:
 - [MSDN Wecutil.exe](https://msdn.microsoft.com/en-us/library/bb736545(v=vs.85).aspx).
 - [Event Queries and Event XML](https://docs.microsoft.com/en-us/previous-versions/bb399427(v=vs.90))
 - [Technet Get-WinEvent](https://technet.microsoft.com/en-us/library/hh849682.aspx).
+- [Setting up a Source Initiated Subscription](https://docs.microsoft.com/en-us/windows/win32/wec/setting-up-a-source-initiated-subscription)
 - [Best practice for configuring EventLog forwarding in Windows Server 2012 R2](https://support.microsoft.com/en-us/help/4494356/best-practice-eventlog-forwarding-performance).
   - Note, "Improves Event Forwarding scalability to ensure thread safety and increase resources." references KB4537806 and KB4537818 to improve handling more event forwarding subscribers per collection server.
 - [Windows Event Forwarding: export and import subscriptions](http://godlessheathenmemoirs.blogspot.co.za/2013/05/windows-event-forwarding-export-and.html).

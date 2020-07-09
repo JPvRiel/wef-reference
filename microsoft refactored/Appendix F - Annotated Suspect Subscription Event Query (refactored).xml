@@ -1,0 +1,114 @@
+<QueryList>
+
+  <!-- Microsoft recommended security events for intrustion detection: Appendix F -->
+  <Query Id='0'>
+
+    <!-- Simple selection from Security by IDs -->
+    <Select Path='Security'>
+      *[
+        System[
+          <!-- 9 event ID groups (limit 22) -->
+          (
+            <!-- CA stop/Start events CA Service Stopped (4880), CA Service Started (4881), CA DB row(s) deleted (4896), CA Template loaded (4898) -->
+            EventID=4880 or EventID=4881 or EventID=4896 or EventID=4898 or
+            <!-- RRAS events – only generated on Microsoft IAS server -->
+            (EventID&gt;=6272 and EventID&lt;=6280) or
+            <!-- Process Terminate (4689) -->
+            EventID=4689 or
+            <!-- Local credential authentication events (4776), Logon with explicit credentials (4648) -->
+            EventID=4776 or EventID=4648 or
+            <!-- Request made to authenticate to Wireless network, including Peer MAC (5632) -->
+            EventID=5632
+          )
+        ]
+      ]
+    </Select>
+
+    <!-- Complex selection form Security inlcuding event data -->
+    <Select Path='Security'>
+      *[
+        <!-- 3 groups (limit 22) -->
+        <!-- Other network logon events (not in Baseline) -->
+        (
+          System[EventID=4624] and
+          EventData[
+            Data[@Name='LogonType']=3
+          ]
+        ) or
+        <!-- Other network logoff events (not in Baseline) -->
+        (
+          System[EventID=4634] and
+          EventData[
+            Data[@Name='LogonType']=3
+          ]
+        ) or
+        <!-- Registry modified events for Operations: New Registry Value created (%%1904), Existing Registry Value modified (%%1905), Registry Value Deleted (%%1906) -->
+        (
+          System[EventID=4657] and 
+          EventData[
+            Data[@Name='OperationType']='%%1904' or 
+            Data[@Name='OperationType']='%%1905' or
+            Data[@Name='OperationType']='%%1906'
+          ]
+        )
+      ]
+    </Select>
+
+    <!-- Simple selection from System by Provider and event IDs -->
+    <Select Path='System'>
+      *[
+        System[
+          Provider[@Name='RemoteAccess'] and
+          (EventID=20274 or EventID=20250 or EventID=20275)
+        ]
+      ]
+    </Select>
+
+    <!-- CAPI events Build Chain (11), Private Key accessed (70), X509 object (90)-->
+    <Select Path='Microsoft-Windows-CAPI2/Operational'>
+      *[System[EventID=11 or EventID=70 or EventID=90]]
+    </Select>
+
+    <!-- Groups assigned to new login except for well known, built-in accounts (LocalSystem, NetworkService, LocalService) -->
+    <Select Path='Microsoft-Windows-LSA/Operational'>
+      *[
+        System[EventID=300] and
+        EventData[
+          Data[@Name='TargetUserSid']!='S-1-5-18' and 
+          Data[@Name='TargetUserSid']!='S-1-5-19' and
+          Data[@Name='TargetUserSid']!='S-1-5-20'
+        ]
+      ]
+    </Select>
+
+    <!-- DNS Client events Query Completed (3008) -->
+    <Select Path='Microsoft-Windows-DNS-Client/Operational'>
+      *[
+        System[EventID=3008] and
+        EventData[
+          <!-- suppresses local machine name resolution events -->
+          Data[@Name='QueryOptions']!='140737488355328' and
+          <!-- suppresses empty name resolution events -->
+          Data[@Name='QueryResults']!=''
+        ]
+      ]
+    </Select>
+
+    <!-- PowerShell execute block activity (4103), Remote Command(4104), Start Command(4105), Stop Command(4106) -->
+    <Select Path='Microsoft-Windows-PowerShell/Operational'>
+      *[System[EventID=4103 or EventID=4104 or EventID=4105 or EventID=4106]]
+    </Select>
+    
+    <!-- Legacy PowerShell pipeline execution details (800) -->
+    <Select Path='Windows PowerShell'>
+      *[System[EventID=800]]
+    </Select>
+
+    <!-- Detect User-Mode drivers loaded - for potential BadUSB detection. -->
+    <Select Path='Microsoft-Windows-DriverFrameworks-UserMode/Operational'>
+      *[System[EventID=2004]]
+    </Select>
+
+  </Query>
+
+</QueryList>

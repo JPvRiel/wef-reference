@@ -4,6 +4,27 @@
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
+
+    {
+      "name": "PowerShell Launch Current File",
+      "type": "PowerShell",
+      "request": "launch",
+      "script": "${file}",
+      "cwd": "${fileDirname}"
+    },
+    {
+      "name": "PowerShell Launch (Test-EventQueryXmlFile.ps1)",
+      "type": "PowerShell",
+      "request": "launch",
+      "script": "${workspaceRoot}/util/Test-EventQueryXmlFile.ps1",
+      "args": [
+        "-XmlFilePath", "'microsoft/Appendix E - Annotated baseline subscription event query.xml'",
+        "-TestsUnit", "EachQuery",
+        "-MaxEvents", "1000",
+        "-StartDateTime", "(Get-Date).AddDays(-1)"
+      ],
+      "cwd": "${workspaceRoot}"
+    },
     {
       "name": "Python: Current File",
       "type": "python",

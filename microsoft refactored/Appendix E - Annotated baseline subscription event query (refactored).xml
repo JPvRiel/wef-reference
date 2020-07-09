@@ -21,52 +21,56 @@ For use by QRadar to filter which events are collected. Note:
 
     <!-- Simple selection from Security by IDs -->
     <Select Path='Security'>
-      *[System[
-        <!-- 21 event IDs (limit 22) -->
-        (
-          <!-- 1102: Security Log cleared events, 1100: EventLog Service shutdown -->
-          EventID=1102 or EventID=1100 or
-          <!-- 4616: System Time Change -->
-          EventID=4616 or
-          <!-- 5632: Wireless Lan 802.1x authentication events with Peer MAC address -->
-          EventID=5632 or
-          <!-- 4778: TS Session reconnect, 4779: TS Session disconnect -->
-          EventID=4778 or EventID=4779 or
-          <!-- 4647: User initiated logoff -->
-          EventID=4647 or
-          <!-- User account events. 4720: Created, 4722: Enabled, 4725: Disabled, 4726: Deleted -->
-          EventID=4720 or EventID=4722 or EventID=4725 or EventID=4726 or
-          <!-- New user added to security group. 4732: local, 4728: global, 4756: universal -->
-          EventID=4732 or EventID=4728 or EventID=4756 or
-          <!-- 5142: Network share create, 5144: Network share delete -->
-          EventID=5142 or EventID=5144 or
-          <!-- 4688: Process -->
-          EventID=4688 or
-          <!-- 4697: New service -->
-          EventID=4697 or
-          <!-- Certificate services. 4886: Received certificate request, 4887: Approved and certificate issued, 4888: Denied request -->
-          EventID=4886 or EventID=4887 or EventID=4888
-        )
-      ]]
+      *[
+        System[
+          <!-- 21 event ID groups (limit 22) -->
+          (
+            <!-- 1102: Security Log cleared events, 1100: EventLog Service shutdown -->
+            EventID=1102 or EventID=1100 or
+            <!-- 4616: System Time Change -->
+            EventID=4616 or
+            <!-- 5632: Wireless Lan 802.1x authentication events with Peer MAC address -->
+            EventID=5632 or
+            <!-- 4778: TS Session reconnect, 4779: TS Session disconnect -->
+            EventID=4778 or EventID=4779 or
+            <!-- 4647: User initiated logoff -->
+            EventID=4647 or
+            <!-- User account events. 4720: Created, 4722: Enabled, 4725: Disabled, 4726: Deleted -->
+            EventID=4720 or EventID=4722 or EventID=4725 or EventID=4726 or
+            <!-- New user added to security group. 4732: local, 4728: global, 4756: universal -->
+            EventID=4732 or EventID=4728 or EventID=4756 or
+            <!-- 5142: Network share create, 5144: Network share delete -->
+            EventID=5142 or EventID=5144 or
+            <!-- 4688: Process -->
+            EventID=4688 or
+            <!-- 4697: New service -->
+            EventID=4697 or
+            <!-- Certificate services. 4886: Received certificate request, 4887: Approved and certificate issued, 4888: Denied request -->
+            EventID=4886 or EventID=4887 or EventID=4888
+          )
+        ]
+      ]
     </Select>
 
     <!-- Simple selection from Security by providers -->
     <Select Path='Security'>
-      *[System[
-        Provider[
-          <!-- 1 providers (limit 22) -->
-          (
-            <!-- Event log service events specific to Security channel -->
-            @Name='Microsoft-Windows-Eventlog'
-          )
+      *[
+        System[
+          Provider[
+            <!-- 1 provider groups (limit 22) -->
+            (
+              <!-- Event log service events specific to Security channel -->
+              @Name='Microsoft-Windows-Eventlog'
+            )
+          ]
         ]
-      ]]
+      ]
     </Select>
 
     <!-- Complex selection form Security inlcuding event data -->
     <Select Path='Security'>
       *[
-        <!-- 6 complex query groups (limit 22) -->
+        <!-- 6 groups (limit 22) -->
         <!-- Local logons without network or service events -->
         (
           System[EventID=4624] and 
@@ -75,7 +79,7 @@ For use by QRadar to filter which events are collected. Note:
             Data[@Name='LogonType']!=5
           ]
         ) or
-        <!-- user logoff for all non-network logon sessions-->
+        <!-- User logoff for all non-network logon sessions -->
         (
           System[EventID=4634] and 
           EventData[
@@ -92,14 +96,14 @@ For use by QRadar to filter which events are collected. Note:
             Data[@Name='TargetUserSid']!='S-1-5-20'
           ]
         ) or
-        <!-- Special Privileges (Admin-equivalent Access) assigned to new logon, excluding LocalSystem-->
+        <!-- Special Privileges (Admin-equivalent Access) assigned to new logon, excluding LocalSystem -->
         (
           System[EventID=4672] and
           EventData[
             Data[1]!='S-1-5-18'
           ]
         ) or
-        <!-- User removed from local Administrators group-->
+        <!-- User removed from local Administrators group -->
         (
           System[EventID=4733] and 
           EventData[
@@ -121,7 +125,7 @@ For use by QRadar to filter which events are collected. Note:
     <Select Path='System'>
       *[
         System[
-          <!-- 5 query groups (limit 22) -->
+          <!-- 5 groups (limit 22) -->
           <!-- Event log service events -->
           Provider[@Name='Microsoft-Windows-Eventlog'] or          
           <!-- 7000: Service Install, 7045: Service start failure -->
@@ -164,7 +168,12 @@ For use by QRadar to filter which events are collected. Note:
 
     <!-- Task scheduler Task Registered (106),  Task Registration Deleted (141), Task Deleted (142) -->
     <Select Path='Microsoft-Windows-TaskScheduler/Operational'>
-      *[System[Provider[@Name='Microsoft-Windows-TaskScheduler'] and (EventID=106 or EventID=141 or EventID=142 )]]
+      *[
+        System[
+          Provider[@Name='Microsoft-Windows-TaskScheduler'] and
+          (EventID=106 or EventID=141 or EventID=142)
+        ]
+      ]
     </Select>
     <!-- Ommitted getting events from the System log since they don't appear to be produced there based on the sampling I did -->
     <!-- <Select Path='System'>*[System[Provider[@Name='Microsoft-Windows-TaskScheduler'] and (EventID=106 or EventID=141 or EventID=142 )]]</Select> -->

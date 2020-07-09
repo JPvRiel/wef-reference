@@ -85,6 +85,29 @@ See `metadata_issues.ipynb` for more detail. TL;DR: the representation of a Keyw
 
 Since the windows event viewer will use the `DisplayName` of a log when available, while XML event queries use the `LogName` as the Path attribute, there can be some confusion when specifying the Path. `metadata_by_loglink_name_missmatch.csv.zip` is produced to enumerate cases where what you see in the Event Viewer won't match what needs to be specified in as the event selection Path.
 
+## Limitations
+
+### Misssing keywords
+
+Sometimes the event metadata extracted via Get-WinEvent does not contain any Keywords. E.g.:
+
+```PowerShell
+$SecAuditProviderMetadata = Get-WinEvent -ListProvider 'Microsoft-Windows-Security-Auditing'
+$SecAuditProviderMetadata.Events | ?{ $_.Id -eq 4624 } | Select Id, Version, Keywords
+```
+
+Returned:
+
+```Console
+  Id Version Keywords
+  -- ------- --------
+4624       0 {}
+4624       1 {}
+4624       2 {}
+```
+
+However, the keywords displayed in the graphical Windows Event Viewer typically show either 'Audit Failure' or 'Audit Success'. There must be some dynamic handling of keywords beyond the metadata that the PowerShell approach fails to extract.
+
 ## Additional reference files
 
 `./Related/WindowsSecurityAuditEvents.csv` is downloaded from Microsoft as an alternate example, but is limited to only security audit log events.
