@@ -50,6 +50,8 @@ A script `compare_wef.py` was written to compare the xml configuration samples p
 - NSA: [`nsacyber`](./nsacyber/)
 - Palantir: [`palantir`](./palantir/)
 
+The comparison can be run against a user supplied set of your own subscrition files. Use the `-c` argument to enable parsing and comparing subscription in the `custom` folder.
+
 See `./compare_wef.py -h` for a few options to control metadata cross-referencing to events defined/implied by queries.
 
 The output files of the script are placed in `export`.

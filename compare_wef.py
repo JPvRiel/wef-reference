@@ -21,6 +21,10 @@ parser = argparse.ArgumentParser(
   description='Compare, enumerate and cross-reference windows event queries.'
 )
 parser.add_argument(
+  '-c', '--custom', action='store_true',
+  help='Include and compare an additional reference from the custom reference folder'
+)
+parser.add_argument(
   '-m', '--metadata', nargs='*',
   help='specify which metadata to include in enrichment (using this flag with nothing imples no metadata).',
   choices=['description', 'keywords', 'task', 'opcode', 'level', 'level.value'],
@@ -502,27 +506,38 @@ def enum_query_combinations(enum, s_file, q_id, q_parent_path, q_type, q):
     #TODO: XML comments not yet included as they can end up disassociated from the select or suppress statement in larger complex queries with multiple select or suppress elements.
 
 
-# Referenced windows event forwarding subscription configurations
-palantir_xml_subscription_files = glob.glob('./palantir/windows-event-forwarding/wef-subscriptions/*.xml')
-palantir_subscription_list = []
-nsa_xml_subscription_files = glob.glob('./nsacyber/Event-Forwarding-Guidance/Subscriptions/NT6/*.xml')
-nsa_subscription_list = []
-microsoft_xml_query_files = glob.glob('./microsoft/*.xml')
-microsoft_subscription_list = []
-n_reference_files = len(palantir_subscription_list) + len(nsa_subscription_list) + len(microsoft_subscription_list)
-
-# Parse the subscription files
+# Parse the referenced windows event forwarding subscription configuration directories
 logger.info('Importing and parsing source subscription/query list references.')
+# Palantir
+palantir_subscription_list = []
+palantir_xml_subscription_files = glob.glob('./palantir/windows-event-forwarding/wef-subscriptions/*.xml')
 for f_subscriptions in palantir_xml_subscription_files:
-   queries = get_queries(get_subscription_query_list_xml(f_subscriptions))
-   palantir_subscription_list.append({'file': f_subscriptions, 'queries': queries})
+  queries = get_queries(get_subscription_query_list_xml(f_subscriptions))
+  palantir_subscription_list.append({'file': f_subscriptions, 'queries': queries})
+# NSA
+nsa_subscription_list = []
+nsa_xml_subscription_files = glob.glob('./nsacyber/Event-Forwarding-Guidance/Subscriptions/NT6/*.xml')
 for f_subscriptions in nsa_xml_subscription_files:
-   queries = get_queries(get_subscription_query_list_xml(f_subscriptions))
-   nsa_subscription_list.append({'file': f_subscriptions, 'queries': queries})
+  queries = get_queries(get_subscription_query_list_xml(f_subscriptions))
+  nsa_subscription_list.append({'file': f_subscriptions, 'queries': queries})
+# Microsoft
+microsoft_subscription_list = []
+microsoft_xml_query_files = glob.glob('./microsoft/*.xml')
 for f_queries in microsoft_xml_query_files:
   with open(f_queries, 'rb') as f_xml:
-   queries = get_queries(f_xml.read())
-   microsoft_subscription_list.append({'file': f_queries, 'queries': queries})
+    queries = get_queries(f_xml.read())
+    microsoft_subscription_list.append({'file': f_queries, 'queries': queries})
+subscription_reference_lists = [microsoft_subscription_list, nsa_subscription_list, palantir_subscription_list]
+# Custom
+custom_subscription_list = []
+if args.custom:
+  custom_xml_query_files = glob.glob('./custom/*.xml')
+  for f_queries in custom_xml_query_files:
+    with open(f_queries, 'rb') as f_xml:
+      queries = get_queries(f_xml.read())
+      custom_subscription_list.append({'file': f_queries, 'queries': queries})
+  subscription_reference_lists.append(custom_subscription_list)
+n_reference_files = len(palantir_subscription_list) + len(nsa_subscription_list) + len(microsoft_subscription_list) + len(custom_subscription_list)
 
 # Represent subscriptions as yaml (for debugging/inspection)
 logger.info('Converting and exporting each subscription (query list) XML reference into a simplified YAML representation.')
@@ -535,6 +550,10 @@ with open(f'{output_dir}/nsa_wef_subscriptons.yml', 'w') as f_yaml:
 with open(f'{output_dir}/microsoft_wef_subscriptons.yml', 'w') as f_yaml:
   f_yaml.write(yaml.dump(prune_none_and_empty(microsoft_subscription_list), default_flow_style=False))
   f_yaml.close()
+if args.custom and len(custom_subscription_list) > 0:
+  with open(f'{output_dir}/custom_wef_subscriptons.yml', 'w') as f_yaml:
+    f_yaml.write(yaml.dump(prune_none_and_empty(custom_subscription_list), default_flow_style=False))
+    f_yaml.close()
 
 # Enumerate and aggregate subscription query combinations normalised by Path (log name), Provider and EventID set.
 # - Assumption that "Path : Provider : EventID" uniquely identifies an event.
@@ -552,7 +571,8 @@ with open(f'{output_dir}/microsoft_wef_subscriptons.yml', 'w') as f_yaml:
 # Once indexing is complete, a list of labeled dict objects more suited to normalisation into a flat csv is generated.
 logger.info('Enumerating query combinations.')
 query_combinations = {}
-for subscription_reference_list in [microsoft_subscription_list, nsa_subscription_list, palantir_subscription_list]:
+
+for subscription_reference_list in subscription_reference_lists:
   n_paths = len(query_combinations)
   for subscription in subscription_reference_list:
     subscription_file = subscription['file']
@@ -583,7 +603,7 @@ with open(f'{output_dir}/query_combinations_index.json', 'w') as f_json:
   f_json.close()
 # Yaml module output is possibly better and more readable, can serialize sets, and doesn't mind comparing None and Int.
 with open(f'{output_dir}/query_combinations_index.yml', 'w') as f_yaml:
-  yaml.dump(query_combinations, f_yaml, sort_keys=True, default_flow_style=False)
+  yaml.dump(query_combinations, f_yaml, default_flow_style=False)
   f_yaml.close()
 
 
@@ -628,7 +648,7 @@ with open(f'{output_dir}/query_combinations.json', 'w') as f_json:
   json.dump(set_to_list(query_combinations_labeled), f_json, indent=2)
   f_json.close()
 with open(f'{output_dir}/query_combinations.yml', 'w') as f_yaml:
-  yaml.dump(query_combinations_labeled, f_yaml, sort_keys=True, default_flow_style=False)
+  yaml.dump(query_combinations_labeled, f_yaml, default_flow_style=False)
   f_yaml.close()
 
 # Flatten event ID view as csv
@@ -652,9 +672,12 @@ query_combinations_flattened_by_event = pd.json_normalize(
 # Move the References colum to the end
 query_combinations_flattened_by_event['References'] = query_combinations_flattened_by_event.pop('References')
 # The core reference can identified by the parent folder the files belong to. 
-core_reference_dirs = ['microsoft', 'nsacyber', 'palantir']
+reference_dirs = ['microsoft', 'nsacyber', 'palantir']
+if len(custom_subscription_list) > 0:
+  reference_dirs.append('custom')
+  
 # Append expanded reference columns
-for i, r_dir in enumerate(core_reference_dirs):
+for i, r_dir in enumerate(reference_dirs):
   # Boolean to list if related to core reference or not
   query_combinations_flattened_by_event[f'Reference.{r_dir}'] = False
   # To list files per core reference that relate to the event ID
@@ -667,7 +690,7 @@ for i, r_dir in enumerate(core_reference_dirs):
 # TODO: Try use other pandas dataframe functions like grouby(), and learn how the split-apply-combine chain of operations works, e.g. https://realpython.com/pandas-groupby/
 for i in query_combinations_flattened_by_event.index:
   for r in query_combinations_flattened_by_event.at[i, 'References']:
-    for r_dir in core_reference_dirs:
+    for r_dir in reference_dirs:
       if r['File'].startswith(f'./{r_dir}'):
         query_combinations_flattened_by_event.at[i, f'Reference.{r_dir}'] = True
         query_combinations_flattened_by_event.at[i, f'Reference.{r_dir}.FileList'].append(r['File'])
