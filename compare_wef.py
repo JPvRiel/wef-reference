@@ -318,6 +318,8 @@ def enum_query_combinations(enum, s_file, q_id, q_parent_path, q_type, q):
   - FIXME: Regex to extract event provider, event ID, or level failed to match properly.
   - Query did not select a valid/defined event or provider.
   - Source system metadata extract lacked provider or event manifests.
+
+  - FIXME: This function has become too complex and bloated. Perhaps it should be simplified by refactored using objects to compartmentalise and abstract the complexity.
   """
   
   # Assume sub-level the <Select Path=...> or <Suppress Path=...> attribute will take precadence over parent <Query Path=...> attribute when choosing a channel
@@ -344,7 +346,7 @@ def enum_query_combinations(enum, s_file, q_id, q_parent_path, q_type, q):
   )
 
   # Metadata lookups
-  # List to accumulate results of metadata lookups
+  # List to accumulate results of events and metadata lookups
   m_list = []
   for e in event_combinations:
     x_provider, x_level, x_event_id = e
@@ -363,7 +365,7 @@ def enum_query_combinations(enum, s_file, q_id, q_parent_path, q_type, q):
             'Keywords':  m_event['Keywords.Name'],
             'Description': m_event['Description'] if args.metadata_full_description or m_event['Description'] is None else m_event['Description'].splitlines()[0],
             'Level': m_event['Level.DisplayName'] if m_event['Level.DisplayName'] else m_event['Level.Name'],
-            'Level.Value': x_level if x_level is not None else m_event['Level.Value'],
+            'Level.Value': m_event['Level.Value'] if m_event['Level.Value'] is not None else x_level,
             'Task': m_event['Task.DisplayName'] if m_event['Task.DisplayName'] else m_event['Task.Name'],
             'Opcode': m_event['Opcode.DisplayName'] if m_event['Opcode.DisplayName'] else m_event['Opcode.Name'],
             'Provider': m_event['Provider.Name']
@@ -401,51 +403,35 @@ def enum_query_combinations(enum, s_file, q_id, q_parent_path, q_type, q):
         # Single list item with nullified values provides a quick hack to ensure at least one loop iteration adds a reference for the query later on.
         m_list = [
           {
-            'Id': None,
+            'Id': x_event_id,
             'Keywords': [],
             'Description': None,
-            'Level': None,
+            'Level': x_level,
             'Level.Value': None,
             'Task': None,
             'Opcode': None,
-            'Provider': None
+            'Provider': x_provider
           }
         ]
 
-    # Enumerate events with defined event IDs
-    # NOTE: Verbose/explicit/unrolled complex dict update done because:
-    # - Python's dict merge() function overwrites key values in a shallow way, i.e. doesn't recurse and do a deep merge, nor does it handle values with lists.
-    # - I don't know of an idomatic python example to merge complex/nested dicts.
-    # - Even PEP https://www.python.org/dev/peps/pep-0584/ does not seem to consider nesting.
-    # - FIXME: could be abstracted/neatened up with a recursive function to merge complex/nested dicts and lists.
-    for m in m_list:
-      path = q_path
-      # When missing/not specificed in the query, use the provider and event_id from the metadata lookup
-      provider = x_provider if x_provider is not None else m['Provider']
-      event_id = x_event_id if x_event_id is not None else m['Id']
-      m_enrich = {k: m[k] for k in m if k in m_include}
-      # Update enumeration with item if not already defined.
-      # New log path?
-      if path not in enum:
-        enum[path] = {
-          provider: {
-            event_id: {
-              'Metadata': m_enrich,
-              'References': {
-                s_file: {
-                  q_id: {
-                    q_type: [
-                      q_xpath
-                    ]
-                  }
-                }
-              }
-            }
-          }
-        }
-      # New/first provider for log path?
-      elif provider not in enum[path]:
-        enum[path][provider] = {
+  # Enumerate events with defined event IDs
+  # NOTE: Verbose/explicit/unrolled complex dict update done because:
+  # - This is an independent iteration using the event metadata if defined, but in case event metadata lookups failed, it falls back to the event info enumerated from the query/xpath.
+  # - Python's dict merge() function overwrites key values in a shallow way, i.e. doesn't recurse and do a deep merge, nor does it handle values with lists.
+  # - I don't know of an idomatic python example to merge complex/nested dicts.
+  # - Even PEP https://www.python.org/dev/peps/pep-0584/ does not seem to consider nesting.
+  # - FIXME: could be abstracted/neatened up with a recursive function to merge complex/nested dicts and lists.
+  for m in m_list:
+    path = q_path
+    # Favour en missing/not specificed in the query, use the provider and event_id from the metadata lookup
+    provider = m['Provider'] if m['Provider'] is not None else x_provider
+    event_id = m['Id'] if m['Id'] is not None else x_event_id
+    m_enrich = {k: m[k] for k in m if k in m_include}
+    # Update enumeration with item if not already defined.
+    # New log path?
+    if path not in enum:
+      enum[path] = {
+        provider: {
           event_id: {
             'Metadata': m_enrich,
             'References': {
@@ -459,9 +445,11 @@ def enum_query_combinations(enum, s_file, q_id, q_parent_path, q_type, q):
             }
           }
         }
-      # New/first event ID for provider?
-      elif event_id not in enum[path][provider]:
-        enum[path][provider][event_id] = {
+      }
+    # New/first provider for log path?
+    elif provider not in enum[path]:
+      enum[path][provider] = {
+        event_id: {
           'Metadata': m_enrich,
           'References': {
             s_file: {
@@ -473,37 +461,52 @@ def enum_query_combinations(enum, s_file, q_id, q_parent_path, q_type, q):
             }
           }
         }
-      # New/first subscription reference file?
-      elif s_file not in enum[path][provider][event_id]['References']:
-        enum[path][provider][event_id]['References'][s_file] = {
-          q_id: {
-            q_type: [
-              q_xpath
-            ]
+      }
+    # New/first event ID for provider?
+    elif event_id not in enum[path][provider]:
+      enum[path][provider][event_id] = {
+        'Metadata': m_enrich,
+        'References': {
+          s_file: {
+            q_id: {
+              q_type: [
+                q_xpath
+              ]
+            }
           }
         }
-      # New/first query id for subscription file
-      elif q_id not in enum[path][provider][event_id]['References'][s_file]:
-        enum[path][provider][event_id]['References'][s_file][q_id] = {
+      }
+    # New/first subscription reference file?
+    elif s_file not in enum[path][provider][event_id]['References']:
+      enum[path][provider][event_id]['References'][s_file] = {
+        q_id: {
           q_type: [
             q_xpath
           ]
         }
-      # New/first selection or suppression filter reference for query id
-      elif q_type not in enum[path][provider][event_id]['References'][s_file][q_id]:
-        enum[path][provider][event_id]['References'][s_file][q_id][q_type] = [
+      }
+    # New/first query id for subscription file
+    elif q_id not in enum[path][provider][event_id]['References'][s_file]:
+      enum[path][provider][event_id]['References'][s_file][q_id] = {
+        q_type: [
           q_xpath
         ]
-      # New/first xpath reference for select/suppress filter
-      elif q_xpath not in enum[path][provider][event_id]['References'][s_file][q_id][q_type]:
-        enum[path][provider][event_id]['References'][s_file][q_id][q_type].append(
-          q_xpath
-        )
-      else:
-        # This is expected if the XPath selects multiple event IDs because ID needs to enumerated out of the same XPath.
-        logger.debug(f"Already enumerated this event and reference. Path={path}, Provider={provider}, EventID={event_id}, and the reference File={s_file}, QueryID={q_id}, Path={q_path}, Type={q_type}, XPath='{q_xpath}'")
+      }
+    # New/first selection or suppression filter reference for query id
+    elif q_type not in enum[path][provider][event_id]['References'][s_file][q_id]:
+      enum[path][provider][event_id]['References'][s_file][q_id][q_type] = [
+        q_xpath
+      ]
+    # New/first xpath reference for select/suppress filter
+    elif q_xpath not in enum[path][provider][event_id]['References'][s_file][q_id][q_type]:
+      enum[path][provider][event_id]['References'][s_file][q_id][q_type].append(
+        q_xpath
+      )
+    else:
+      # This is expected if the XPath selects multiple event IDs because ID needs to enumerated out of the same XPath.
+      logger.debug(f"Already enumerated this event and reference. Path={path}, Provider={provider}, EventID={event_id}, and the reference File={s_file}, QueryID={q_id}, Path={q_path}, Type={q_type}, XPath='{q_xpath}'")
 
-    #TODO: XML comments not yet included as they can end up disassociated from the select or suppress statement in larger complex queries with multiple select or suppress elements.
+  #TODO: XML comments not yet included as they can end up disassociated from the select or suppress statement in larger complex queries with multiple select or suppress elements.
 
 
 # Parse the referenced windows event forwarding subscription configuration directories
