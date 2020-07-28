@@ -1,0 +1,20 @@
+<QueryList>
+
+  <Query Id='1'>
+    <!-- 4624 events selected by the Microsoft Security Baseline -->
+    <Select Path='Security'>
+      *[
+        System[
+          EventID=4624
+        ] and 
+        EventData[
+          Data[@Name="LogonType"]="5" and 
+          Data[@Name="TargetUserSid"]!="S-1-5-18" and
+          Data[@Name="TargetUserSid"]!="S-1-5-19" and
+          Data[@Name="TargetUserSid"]!="S-1-5-20"
+        ]
+      ]
+    </Select>
+  </Query>
+
+</QueryList>

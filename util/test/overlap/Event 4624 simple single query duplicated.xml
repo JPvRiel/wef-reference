@@ -1,0 +1,25 @@
+<QueryList>
+  
+  <Query Id='0'>
+    <!-- Select all events -->
+    <Select Path='Security'>
+      *[
+        System[
+          EventID=4624
+        ]
+      ]
+    </Select>
+  </Query>
+
+  <Query Id='1'>
+    <!-- Select all events -->
+    <Select Path='Security'>
+      *[
+        System[
+          EventID=4624
+        ]
+      ]
+    </Select>
+  </Query>
+
+</QueryList>

@@ -1,20 +1,20 @@
 <#
 .SYNOPSIS
-  Test queries defined in a QueryList or Subscripiton XML file.
+  Test queries defined in a QueryList or Subscription XML file.
 .DESCRIPTION
   Queries events from computers using parallel jobs and then outputs a summary about the events found for a given select query, query item or query list over a specific time window (-StartDateTime and -EndDateTime).
 .PARAMETER Computers
   A specific remote system or list of systems to query. Defaults to the current system (which reqires remote powershell to function). 
 .PARAMETER MaxEvents
   The overall upper limit of events to return. This limit is shared by the entire query list set.
-.PARAMETER TestsUnit
-  TestsUnit can be either of 'QueryList', 'EachQuery', or 'EachSelect' with the latter two options useful for indepenant tests of the QueryList components.
+.PARAMETER TestUnit
+  TestUnit can be either of 'QueryList', 'EachQuery', or 'EachSelect' with the latter two options useful for independent tests of the QueryList components.
 .PARAMETER StartDateTime
   The newest event timestamp to look for events. Assumes the source query file does not already have it's own time filters applied.
 .PARAMETER EndDateTime
   The oldest event timestamp to look for events. Assumes the source query file does not already have it's own time filters applied.
 .PARAMETER JobTimeoutSec
-  The maximum number of seconds to wait for query tests to complete. With 'EachQuery' or 'EachSelect' TestsUnit, this is per query tested, not an overall timeout, so expect testing to take longer than a single timeout.
+  The maximum number of seconds to wait for query tests to complete. With 'EachQuery' or 'EachSelect' TestUnit, this is per query tested, not an overall timeout, so expect testing to take longer than a single timeout.
 .PARAMETER CsvTestResultFile
   If specified, summary aggregate of events found per test will be output to the CSV file.
 #>
@@ -23,7 +23,7 @@ param(
   [Parameter(Position=0)][Alias('ComputerName')][String[]]$Computers = @('.'),
   [Parameter(Position=1, Mandatory)][String]$XmlFilePath,
   [int]$MaxEvents = 10000,
-  [String][ValidateSet('QueryList','EachQuery','EachSelect')]$TestsUnit = 'QueryList',
+  [String][ValidateSet('QueryList','EachQuery','EachSelect')]$TestUnit = 'QueryList',
   [switch]$SortByEventCount,
   $StartDateTime=$null,
   $EndDateTime=$null,
@@ -36,25 +36,28 @@ $ErrorActionPreference = 'Stop'
 # Build XPath and XSLT to add suppress after selects for events outside of the start to end time range (if set).
 $ISO8601_UTC_FORMAT_STRING_MS = 'yyyy-MM-ddTHH:mm:ss.fffZ'
 $startISO8601_UTC_ms = $null
-if ($EndDateTime) {
+if ($StartDateTime) {
   $startISO8601_UTC_ms = ([DateTime]$StartDateTime).ToUniversalTime().ToString($ISO8601_UTC_FORMAT_STRING_MS)
+  Write-Debug "Time range: From $startISO8601_UTC_ms."
 }
 $endISO8601_UTC_ms = $null
 if ($EndDateTime) {
   $endISO8601_UTC_ms = ([DateTime]$EndDateTime).ToUniversalTime().ToString($ISO8601_UTC_FORMAT_STRING_MS)
+  Write-Debug "Time range: Until $endISO8601_UTC_ms."
 }
 $dateTimeSuppressXPath = $null
 if ($startISO8601_UTC_ms -and $endISO8601_UTC_ms) {
-  $dateTimeSuppressXPath = "*[System[TimeCreated[@SystemTime&gt;='$StartISO8601_UTC_ms' and @SystemTime&lt;='$EndISO8601_UTC_ms']]]"
+  $dateTimeSuppressXPath = "*[System[TimeCreated[@SystemTime&lt;'$startISO8601_UTC_ms' or @SystemTime&gt;'$endISO8601_UTC_ms']]]"
 }
 elseif ($startISO8601_UTC_ms -and -not $endISO8601_UTC_ms) {
-  $dateTimeSuppressXPath = "*[System[TimeCreated[@SystemTime&gt;='$StartISO8601_UTC_ms']]]"
+  $dateTimeSuppressXPath = "*[System[TimeCreated[@SystemTime&lt;'$startISO8601_UTC_ms']]]"
 }
 elseif ($endISO8601_UTC_ms -and -not $startISO8601_UTC_ms) {
-  $dateTimeSuppressXPath = "*[System[TimeCreated[@SystemTime&lt;='$EndISO8601_UTC_ms']]]"
+  $dateTimeSuppressXPath = "*[System[TimeCreated[@SystemTime&gt;'$endISO8601_UTC_ms']]]"
 }
 $xsltAddDateTimeSuppress = $null
 if ($dateTimeSuppressXPath) {
+  Write-Debug "Time range suppress XPath: $dateTimeSuppressXPath"
   [xml]$xslAddDateTimeSuppress =
 @"
 <?xml version='1.0'?>
@@ -78,12 +81,13 @@ if ($dateTimeSuppressXPath) {
 
 </xsl:stylesheet>
 "@
+  Write-Debug "XSLT:`n$($xslAddDateTimeSuppress.OuterXml)"
   $xsltAddDateTimeSuppress = [Xml.Xsl.XslCompiledTransform]::New()
   $xsltAddDateTimeSuppress.Load($xslAddDateTimeSuppress)
 }
 
 $xmlFileContent = Get-Content $XmlFilePath
-# Warn about unexpected results if both source and script paramters are fitering by time.
+# Warn about unexpected results if both source and script paramters are filtering by time.
 if ($dateTimeSuppressXPath -and $xmlFileContent -match 'TimeCreated') {
   Write-Warning "'TimeCreated' was found in the file '$XmlFilePath'. This will likely conflict with StartDateTime or EndDateTime parameters given." -WarningAction 'Inquire'
 }
@@ -152,12 +156,12 @@ Write-Output "Summary: '$XmlFilePath' had $countQueries queries, with $countSele
 
 $TestEventQueryScriptBlock = {
   param(
-    $XmlQueryList,
-    $MaxEvents
+    [xml]$XmlQueryList,
+    [int]$MaxEvents
   )
 
   try {
-    $events = Get-WinEvent -FilterXML $using:XmlQueryList -MaxEvents $using:MaxEvents -ErrorAction Stop
+    $events = Get-WinEvent -FilterXML $XmlQueryList -MaxEvents $MaxEvents -ErrorAction Stop
     $eventGroups = $events | Group-Object -Property ProviderName, LevelDisplayName, Id, MachineName
     foreach ($eventGroup in $eventGroups) {
       $FirstEvent = $eventGroup.Group[-1]
@@ -216,31 +220,30 @@ $eventGroupSummaries = [Collections.ArrayList]@()
 
 function Invoke-TestUnitJob {
   param(
-    $XmlQueryList,
-    $MaxEvents
+    [xml]$XmlQueryList,
+    [int]$MaxEvents
   )
 
   # Apply time filter XSLT Suppress
+  $transformedXmlQueryList = $null
   if ($xsltAddDateTimeSuppress) {
-    # Transform into a memory stream
-    #StringWriter is simpler, but defaulted to UTF-16 encoding? If need be, via a stream writer, encoding could be forced as UTF8 with a memory stream.
-    #$transformedXmlQueryList = [System.IO.StringWriter]::new()
-    #$transformedXmlQueryList
+    # Create memory stream and stream writer
     $memoryStream = [IO.MemoryStream]::New(128)
-    #$streamWriter = [IO.StreamWriter]::New($memoryStream, [Text.Encoding]::UTF8Encoding)
+    $streamWriter = [IO.StreamWriter]::New($memoryStream, [Text.Encoding]::UTF8Encoding)
     $xmlWriterSettings = [System.Xml.XmlWriterSettings]::new()
     $xmlWriterSettings.OmitXmlDeclaration = $true
-    $xmlWriter = [System.XML.XmlWriter]::Create($memoryStream, $xmlWriterSettings)
-    #$xmlWriter = [System.XML.XmlWriter]::Create($streamWriter, $xmlWriterSettings)
-    $xsltAddDateTimeSuppress.Transform($XmlQueryList, $xmlWriter)
+    $xmlWriterSettings.Indent = $true
+    $xmlWriter = [System.XML.XmlWriter]::Create($streamWriter, $xmlWriterSettings)
+    # Transform into a memory stream
+    $xsltAddDateTimeSuppress.Transform($XmlQueryList, $null, $xmlWriter)
     $xmlWriter.Flush()
     $xmlWriter.Close()
-    # Read from the memory stream
-    #FIXME: XML reader not working as I thought it would. ReadOuterXml() returns nothing.
-    #$memoryStream.Position = 0
-    #$xmlReader = [system.Xml.XmlReader]::Create($memoryStream)
-    #$xmlReader.ReadOuterXml()
-    [xml]$transformedXmlQueryList = [System.Text.Encoding]::UTF8.GetString($xmlOutputMemoryStream.ToArray())
+    # Read back from the memory stream
+    $memoryStream.Position = 0
+    $streamReader = [IO.StreamReader]::New($memoryStream, [Text.Encoding]::UTF8Encoding)
+    [xml]$transformedXmlQueryList = $streamReader.ReadToEnd()
+    Write-Debug "Date range inserted into Query List:`n$($transformedXmlQueryList.OuterXml)"
+    $streamReader.Close()
     $memoryStream.Dispose()
   }
   else {
@@ -254,7 +257,7 @@ function Invoke-TestUnitJob {
     Write-Error "Parent job was '$jobState' was incomplete before the timeout."
   }
   # FIXME: Remote jobs have child jobs? Check each child job?
-  # FIXME: Warnings and errors from recieve job seem to write to the console before the above output despite receive job being called later
+  # FIXME: Warnings and errors from receive job seem to write to the console before the above output despite receive job being called later
   $jobError = $null
   $jobWarning = $null
   $jobOutput = $job | Receive-Job -ErrorVariable jobError -WarningVariable jobWarning -ErrorAction Continue
@@ -264,7 +267,7 @@ function Invoke-TestUnitJob {
   if (-not ($jobError -or $jobWarning)) {
     if ($jobObjects.Count -gt 0 -and $jobObjects[0].Id) {
       Write-Output "$($jobObjects.Count) event groups found for query:`n'$($XmlQueryList.OuterXml)'"
-      $jobObjects | Format-Table -Property Log, Provider, Id, LevelName, MachineName, Count, LastMessage
+      $jobObjects | Format-Table -Property Log, Provider, Id, LevelName, MachineName, Count, FirstTime, LastTime, LastMessage
       # Display result table, but avoid displaying if there is a single empty exception object returned.
     }
     else {
@@ -281,7 +284,7 @@ function Invoke-TestUnitJob {
 # NB! Don't allow too many query jobs to run in parallel as it will overwhelm the event log service on the computer. Rather wait on each Unit Test query per computer.
 Write-Output "Testing query list on $($Computers.Count) computers in parallel jobs. Event limits apply per computer. This may take a while..."
 $maxEventsTotal = $MaxEvents
-Switch ($TestsUnit) {
+Switch ($TestUnit) {
   'QueryList' {
     Write-Output "The full query list will be tested and limited to $maxEventsTotal events."
     Invoke-TestUnitJob -XmlQueryList $validatedXml -MaxEvents $maxEventsTotal
