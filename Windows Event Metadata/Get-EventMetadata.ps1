@@ -1,28 +1,51 @@
 Write-Output "Getting metadata of event providers. Please wait..."
 New-Item -ItemType Directory -Force -Path '.\Extracted'
-$allProvidersMetadata = Get-WinEvent -ListProvider '*' -ErrorAction 'Continue' -ErrorVariable getWinEventErrors
+# NOTE: 
+# - Due to permission error related bugs with some manifests, even as admin, Get-WinEvent is not suitable for gathering all provider metadata
+# - Even with -ErrorAction 'Continue', enumeration stops and fails to assign to the variable when 'System.UnauthorizedAccessException' occurs.
+#$allProvidersMetadata = Get-WinEvent -ListProvider '*' -ErrorAction 'Continue' -ErrorVariable getWinEventErrors
+$allProvidersMetadata = [System.Collections.ArrayList]@()
+$providerMetadataExceptions = [System.Collections.ArrayList]@()
+$eventSession = [System.Diagnostics.Eventing.Reader.EventLogSession]::GlobalSession
+$eventProviderNames = $eventSession.GetProviderNames();
+foreach ($eventProviderName in $eventProviderNames) {
+    $providerMetadataException = $null
+    try {
+      # Calling Get-WinEvent is much slower than createing a new object
+      #$providerMetadata = Get-WinEvent -ListProvider $eventProviderName -ErrorAction 'Stop'
+      $providerMetadata = New-Object -TypeName System.Diagnostics.Eventing.Reader.ProviderMetadata -ArgumentList $eventProviderName -ErrorAction 'Stop'
+      $allProvidersMetadata += $providerMetadata
+    }
+    catch {
+      $providerMetadataException = [PSCustomObject]@{
+        ProviderName = $eventProviderName
+        Exception = $_.Exception
+      }
+      $providerMetadataExceptions.Add($providerMetadataException)
+      Write-Error "Provider metadata exception for $eventProvider." -ErrorAction 'Continue'
+      $_
+    }
+}
 $providerCount = $allProvidersMetadata.count
-$errorCount = $getWinEventErrors.count
+$errorCount = $providerMetadataExceptions.count
 if ($errorCount -gt 0) {
   # Report errors.
-  Write-Warning "Attempted export of $errorCount provider metadata encounted errors."
+  Write-Warning "Attempted export of $errorCount provider metadata encountered errors."
   Write-Output "Summary of inner exception messages:"
-  $getWinEventErrors.Exception.InnerException.Message | Group-Object -NoElement | Sort-Object  -Descending -Property Count | Format-Table -AutoSize
+  $providerMetadataExceptions.Exception.InnerException.Message | Group-Object -NoElement | Sort-Object  -Descending -Property Count | Format-Table -AutoSize
   # Log simple error messages as text.
   $errorFile = '.\Extracted\Get-WinEvent.err.log.txt'
-  # Out-File fails to strip control characters for color output, so remove them with regex as a workarround.
-  $getWinEventErrors | ForEach-Object { $_ -replace '\[\d+(;\d+)?m' } | Out-file -FilePath $errorFile
+  # Out-File fails to strip control characters for color output, so remove them with regex as a workaround.
+  #$providerMetadataExceptions | ForEach-Object { $_ -replace '\[\d+(;\d+)?m' } | Out-file -FilePath $errorFile
+  $providerMetadataExceptions | %{ "Provider: $($_.ProviderName). Exception: $($_.Exception)" } | Out-file -FilePath $errorFile
+  # Extract properties for CSV output
+  $calcProps = @(
+    @{n='ProviderName';e={$_.ProviderName}},
+    @{n='Exception.InnerException.Message';e={$_.Exception.InnerException.Message}}
+  )
   # Log errors as csv
   $errorFileCsv = '.\Extracted\Get-WinEvent.err.log.csv'
-  # Extract provider name and other properties for CSV output
-  $reProvider = '^Could not retrieve information about the (\S+) provider'
-  $calcProps = @(
-    @{n='Exception.Message';e={$_.Exception.Message}},
-    @{n='Exception.InnerException.Message';e={$_.Exception.InnerException.Message}},
-    @{n='Exception.Message.Provider';e={if ($_.Exception.Message -match $reProvider) {$Matches[1]} else {$null}}},
-    @{n='FullyQualifiedErrorId';e={$_.FullyQualifiedErrorId}}
-  )
-  $getWinEventErrors | Select-Object -Property $calcProps | Export-Csv -Path $errorFileCsv
+  $providerMetadataExceptions | Select-Object -Property $calcProps | Export-Csv -Path $errorFileCsv
   Write-Output "See `"$errorFile`" for messages and `"$errorFileCsv`" for a more detailed breakdown of errors."
 }
 # Export as JSON.
