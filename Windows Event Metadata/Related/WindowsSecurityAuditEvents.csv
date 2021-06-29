@@ -13,7 +13,7 @@ System;Security System Extension;4622;A security package has been loaded by the 
 Logon/Logoff;Logon;4624;An account was successfully logged on.
 Logon/Logoff;Logon;4625;An account failed to log on.
 Logon/Logoff;Logon;4626;User/Device claims information.
-Logon/Logoff;Group Membership;4627;Group membership information. 
+Logon/Logoff;Group Membership;4627;Group membership information.
 Logon/Logoff;Logoff;4634;An account was logged off.
 Logon/Logoff;IPsec Main Mode;4646;%1
 Logon/Logoff;Logoff;4647;User initiated logoff.
@@ -162,7 +162,7 @@ Account Management;Application Group Management;4792;An LDAP query group was del
 Account Management;Other Account Management Events;4793;The Password Policy Checking API was called.
 Account Management;User Account Management;4794;An attempt was made to set the Directory Services Restore Mode.
 Account Management;User Account Management;4797;An attempt was made to query the existence of a blank password for an account.
-Account Management;User Account Management;4798;A user's local group membership was enumerated. 
+Account Management;User Account Management;4798;A user's local group membership was enumerated.
 Account Management;Security Group Management;4799;A security-enabled local group membership was enumerated.
 Logon/Logoff;Other Logon/Logoff Events;4800;The workstation was locked.
 Logon/Logoff;Other Logon/Logoff Events;4801;The workstation was unlocked.
@@ -177,7 +177,7 @@ Account Logon;Kerberos Service Ticket Operations;4821;A Kerberos service ticket 
 Account Logon;Credential Validation;4822;NTLM authentication failed because the account was a member of the Protected User group.
 Account Logon;Credential Validation;4823;NTLM authentication failed because access control restrictions are required.
 Account Logon;Kerberos Authentication Service;4824;Kerberos preauthentication by using DES or RC4 failed because the account was a member of the Protected User group.
-Logon/Logoff;Other Logon/Logoff Events;4825;A user was denied the access to Remote Desktop. 
+Logon/Logoff;Other Logon/Logoff Events;4825;A user was denied the access to Remote Desktop.
 Policy Change;Other Policy Change Events;4826;Boot Configuration Data loaded.
 Policy Change;Authentication Policy Change;4864;A namespace collision was detected.
 Policy Change;Authentication Policy Change;4865;A trusted forest information entry was added.
@@ -342,7 +342,7 @@ Object Access;Filtering Platform Connection;5157;The Windows Filtering Platform 
 Object Access;Filtering Platform Connection;5158;The Windows Filtering Platform has permitted a bind to a local port.
 Object Access;Filtering Platform Connection;5159;The Windows Filtering Platform has blocked a bind to a local port.
 Object Access;File Share;5168;Spn check for SMB/SMB2 failed.
-DS Access;Directory Service Access;5169;A directory service object was modified.     
+DS Access;Directory Service Access;5169;A directory service object was modified.
 Account Management;User Account Management;5376;Credential Manager credentials were backed up.
 Account Management;User Account Management;5377;Credential Manager credentials were restored from a backup.
 Logon/Logoff;Other Logon/Logoff Events;5378;The requested credentials delegation was disallowed by policy.
@@ -401,11 +401,11 @@ Logon/Logoff;Network Policy Server;6278;Network Policy Server granted full acces
 Logon/Logoff;Network Policy Server;6279;Network Policy Server locked the user account due to repeated failed authentication attempts.
 Logon/Logoff;Network Policy Server;6280;Network Policy Server unlocked the user account.
 System;System Integrity;6281;Code Integrity determined that the page hashes of an image file are not valid. The file could be improperly signed without page hashes or corrupt due to unauthorized modification. The invalid hashes could indicate a potential disk device error
-System;Other System Events;6400;BranchCache: Received an incorrectly formatted response while discovering availability of content. 
-System;Other System Events;6401;BranchCache: Received invalid data from a peer. Data discarded. 
-System;Other System Events;6402;BranchCache: The message to the hosted cache offering it data is incorrectly formatted. 
+System;Other System Events;6400;BranchCache: Received an incorrectly formatted response while discovering availability of content.
+System;Other System Events;6401;BranchCache: Received invalid data from a peer. Data discarded.
+System;Other System Events;6402;BranchCache: The message to the hosted cache offering it data is incorrectly formatted.
 System;Other System Events;6403;BranchCache: The hosted cache sent an incorrectly formatted response to the client.
-System;Other System Events;6404;BranchCache: Hosted cache could not be authenticated using the provisioned SSL certificate. 
+System;Other System Events;6404;BranchCache: Hosted cache could not be authenticated using the provisioned SSL certificate.
 System;Other System Events;6405;BranchCache: %2 instance(s) of event id %1 occurred.
 System;Other System Events;6406;%1 registered to Windows Firewall to control filtering for the following: %2
 System;Other System Events;6407;1%
