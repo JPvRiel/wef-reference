@@ -18,19 +18,15 @@ Note, `Get-WinEvent -ListProvider '*'` and dumping to JSON a better alternative 
 wevtutil gp Microsoft-Windows-Security-Auditing /ge /gm:true
 ```
 
-### Provider metadata errors are common
+## Add a user to the Event Log Readers group
 
-PowerShell errors for `Get-WinEvent` are exported to `.\Extracted\Get-WinEvent.err.log.txt` as simple messages and `.\Extracted\Get-WinEvent.err.log.csv` for neater categorisation by provider and inner exception message.
+E.g. for the current logged in user via an elevated Administrator PowerShell session:
 
-I'm yet to run `Get-EventMetadata.ps1` on any Windows system without at least a few errors. Due to the complexity of the Windows event API and eventing schema, errors seem quite common. On my sample Windows 10 system, I encountered 46 errors with the following 3 inner exception messages.
-
-```console
-Count Name
------ ----
-   31 The system cannot find the file specified.
-   11 The specified resource type cannot be found in the image file.
-    4 The data is invalid.
+```PowerShell
+Add-LocalGroupMember -Group 'Event Log Readers' -Member ([System.Security.Principal.WindowsIdentity]::GetCurrent().Name)
 ```
+
+However, the `Get-WinEventlog` powershell command still seems to check and require that an elevated Administrator session is in use.
 
 ## Flattened metadata views by Providers and Events
 
@@ -108,8 +104,43 @@ Returned:
 
 However, the keywords displayed in the graphical Windows Event Viewer typically show either 'Audit Failure' or 'Audit Success'. There must be some dynamic handling of keywords beyond the metadata that the PowerShell approach fails to extract.
 
+### Provider metadata errors are common
+
+PowerShell errors for `Get-WinEvent` are exported to `.\Extracted\Get-WinEvent.err.log.txt` as simple messages and `.\Extracted\Get-WinEvent.err.log.csv` for neater categorisation by provider and inner exception message.
+
+I'm yet to run `Get-EventMetadata.ps1` on any Windows system without at least a few errors. Due to the complexity of the Windows event API and eventing schema, errors seem quite common. On my sample Windows 10 system, I encountered 46 errors with the following 3 inner exception messages.
+
+```text
+Count Name
+----- ----
+    4 The specified resource type cannot be found in the image file.
+    4 The system cannot find the file specified.
+    1 Attempted to perform an unauthorized operation.
+```
+
+### Access errors
+
+Even when PowerShell is run as an administrator, you may get 'Get-WinEvent : Attempted to perform an unauthorized operation.' errors with `$allProvidersMetadata = Get-WinEvent -ListProvider '*' -ErrorAction 'Continue' -ErrorVariable getWinEventErrors`. Unfortunately, this exception seems to ignore the error causes none of the valid providers without access errors leaving `$allProvidersMetadata` empty. Therefore, more comlex handling using .Net classes is needed, eg.:
+
+```PowerShell
+$EventSession = [System.Diagnostics.Eventing.Reader.EventLogSession]::GlobalSession;
+$EventProviderNames = $EventSession.GetProviderNames();
+$ProviderMetadataList = @()
+foreach ($EventProvider in $EventProviderNames) {
+  #...
+}
+```
+
+In one instance, the access problem was caused by the `OpenSSH` provider not having set permissions.
+
+Related: [stackoverflow: Get Windows event provider information](https://stackoverflow.com/a/21012623/5472444)
+
 ## Additional reference files
 
 `./Related/WindowsSecurityAuditEvents.csv` is downloaded from Microsoft as an alternate example, but is limited to only security audit log events.
 
 This was converted to CSV from WindowsSecurityAuditEvents.xlsx. WindowsSecurityAuditEvents.xlsx was obtained from the page [Download Windows security audit events from Official Microsoft Download Center](https://www.microsoft.com/en-us/download/details.aspx?id=50034).
+
+## Flattening the nested JSON into views
+
+Use `metadata.py` to be able to create flattend views in the `flattend` subdirectory. The .csv output should be more usable for import into spreadsheets.
