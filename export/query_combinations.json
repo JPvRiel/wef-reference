@@ -7,6 +7,87 @@
           "Name": "Microsoft Antimalware",
           "Events": [
             {
+              "Id": 1116,
+              "Metadata": {
+                "Keywords": [],
+                "Description": null,
+                "Level": null,
+                "Level.Value": null,
+                "Task": null,
+                "Opcode": null
+              },
+              "References": [
+                {
+                  "File": "./microsoft/Appendix E - Annotated baseline subscription event query.xml",
+                  "QueryList": [
+                    {
+                      "Id": "0",
+                      "SubQueries": [
+                        {
+                          "Type": "Select",
+                          "XPath": "*[System[Provider[@Name='Microsoft Antimalware'] and (EventID >= 1116 and EventID <= 1119)]]"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "Id": 1117,
+              "Metadata": {
+                "Keywords": [],
+                "Description": null,
+                "Level": null,
+                "Level.Value": null,
+                "Task": null,
+                "Opcode": null
+              },
+              "References": [
+                {
+                  "File": "./microsoft/Appendix E - Annotated baseline subscription event query.xml",
+                  "QueryList": [
+                    {
+                      "Id": "0",
+                      "SubQueries": [
+                        {
+                          "Type": "Select",
+                          "XPath": "*[System[Provider[@Name='Microsoft Antimalware'] and (EventID >= 1116 and EventID <= 1119)]]"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "Id": 1118,
+              "Metadata": {
+                "Keywords": [],
+                "Description": null,
+                "Level": null,
+                "Level.Value": null,
+                "Task": null,
+                "Opcode": null
+              },
+              "References": [
+                {
+                  "File": "./microsoft/Appendix E - Annotated baseline subscription event query.xml",
+                  "QueryList": [
+                    {
+                      "Id": "0",
+                      "SubQueries": [
+                        {
+                          "Type": "Select",
+                          "XPath": "*[System[Provider[@Name='Microsoft Antimalware'] and (EventID >= 1116 and EventID <= 1119)]]"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
               "Id": 1119,
               "Metadata": {
                 "Keywords": [],
@@ -19732,11 +19813,52 @@
               ]
             },
             {
+              "Id": 1,
+              "Metadata": {
+                "Keywords": [],
+                "Description": null,
+                "Level": null,
+                "Level.Value": null,
+                "Task": null,
+                "Opcode": null
+              },
+              "References": [
+                {
+                  "File": "./nsacyber/Event-Forwarding-Guidance/Subscriptions/NT6/EMETLogs.xml",
+                  "QueryList": [
+                    {
+                      "Id": "0",
+                      "SubQueries": [
+                        {
+                          "Type": "Select",
+                          "XPath": "*[System[Provider[@Name='EMET'] and (Level=2 or Level=3) and (EventID=1 or EventID=2)]]"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "File": "./palantir/windows-event-forwarding/wef-subscriptions/EMET.xml",
+                  "QueryList": [
+                    {
+                      "Id": "0",
+                      "SubQueries": [
+                        {
+                          "Type": "Select",
+                          "XPath": "*[System[Provider[@Name='EMET'] and (Level=2 or Level=3) and (EventID=1 or EventID=2)]]"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
               "Id": 2,
               "Metadata": {
                 "Keywords": [],
                 "Description": null,
-                "Level": 3,
+                "Level": null,
                 "Level.Value": null,
                 "Task": null,
                 "Opcode": null
@@ -21391,11 +21513,227 @@
           "Name": "Windows Defender",
           "Events": [
             {
+              "Id": 1005,
+              "Metadata": {
+                "Keywords": [],
+                "Description": null,
+                "Level": null,
+                "Level.Value": null,
+                "Task": null,
+                "Opcode": null
+              },
+              "References": [
+                {
+                  "File": "./nsacyber/Event-Forwarding-Guidance/Subscriptions/NT6/DefenderErr.xml",
+                  "QueryList": [
+                    {
+                      "Id": "0",
+                      "SubQueries": [
+                        {
+                          "Type": "Select",
+                          "XPath": "*[System[Provider[@Name='Windows Defender'] and (Level=2 or Level=3) and (EventID=1005 or EventID=1006 or EventID=1008 or EventID=1010 or EventID=2001 or EventID=2003 or EventID=2004 or EventID=3002 or EventID=5008)]]"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "Id": 1006,
+              "Metadata": {
+                "Keywords": [],
+                "Description": null,
+                "Level": null,
+                "Level.Value": null,
+                "Task": null,
+                "Opcode": null
+              },
+              "References": [
+                {
+                  "File": "./nsacyber/Event-Forwarding-Guidance/Subscriptions/NT6/DefenderErr.xml",
+                  "QueryList": [
+                    {
+                      "Id": "0",
+                      "SubQueries": [
+                        {
+                          "Type": "Select",
+                          "XPath": "*[System[Provider[@Name='Windows Defender'] and (Level=2 or Level=3) and (EventID=1005 or EventID=1006 or EventID=1008 or EventID=1010 or EventID=2001 or EventID=2003 or EventID=2004 or EventID=3002 or EventID=5008)]]"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "Id": 1008,
+              "Metadata": {
+                "Keywords": [],
+                "Description": null,
+                "Level": null,
+                "Level.Value": null,
+                "Task": null,
+                "Opcode": null
+              },
+              "References": [
+                {
+                  "File": "./nsacyber/Event-Forwarding-Guidance/Subscriptions/NT6/DefenderErr.xml",
+                  "QueryList": [
+                    {
+                      "Id": "0",
+                      "SubQueries": [
+                        {
+                          "Type": "Select",
+                          "XPath": "*[System[Provider[@Name='Windows Defender'] and (Level=2 or Level=3) and (EventID=1005 or EventID=1006 or EventID=1008 or EventID=1010 or EventID=2001 or EventID=2003 or EventID=2004 or EventID=3002 or EventID=5008)]]"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "Id": 2001,
+              "Metadata": {
+                "Keywords": [],
+                "Description": null,
+                "Level": null,
+                "Level.Value": null,
+                "Task": null,
+                "Opcode": null
+              },
+              "References": [
+                {
+                  "File": "./nsacyber/Event-Forwarding-Guidance/Subscriptions/NT6/DefenderErr.xml",
+                  "QueryList": [
+                    {
+                      "Id": "0",
+                      "SubQueries": [
+                        {
+                          "Type": "Select",
+                          "XPath": "*[System[Provider[@Name='Windows Defender'] and (Level=2 or Level=3) and (EventID=1005 or EventID=1006 or EventID=1008 or EventID=1010 or EventID=2001 or EventID=2003 or EventID=2004 or EventID=3002 or EventID=5008)]]"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "Id": 1010,
+              "Metadata": {
+                "Keywords": [],
+                "Description": null,
+                "Level": null,
+                "Level.Value": null,
+                "Task": null,
+                "Opcode": null
+              },
+              "References": [
+                {
+                  "File": "./nsacyber/Event-Forwarding-Guidance/Subscriptions/NT6/DefenderErr.xml",
+                  "QueryList": [
+                    {
+                      "Id": "0",
+                      "SubQueries": [
+                        {
+                          "Type": "Select",
+                          "XPath": "*[System[Provider[@Name='Windows Defender'] and (Level=2 or Level=3) and (EventID=1005 or EventID=1006 or EventID=1008 or EventID=1010 or EventID=2001 or EventID=2003 or EventID=2004 or EventID=3002 or EventID=5008)]]"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "Id": 2003,
+              "Metadata": {
+                "Keywords": [],
+                "Description": null,
+                "Level": null,
+                "Level.Value": null,
+                "Task": null,
+                "Opcode": null
+              },
+              "References": [
+                {
+                  "File": "./nsacyber/Event-Forwarding-Guidance/Subscriptions/NT6/DefenderErr.xml",
+                  "QueryList": [
+                    {
+                      "Id": "0",
+                      "SubQueries": [
+                        {
+                          "Type": "Select",
+                          "XPath": "*[System[Provider[@Name='Windows Defender'] and (Level=2 or Level=3) and (EventID=1005 or EventID=1006 or EventID=1008 or EventID=1010 or EventID=2001 or EventID=2003 or EventID=2004 or EventID=3002 or EventID=5008)]]"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "Id": 2004,
+              "Metadata": {
+                "Keywords": [],
+                "Description": null,
+                "Level": null,
+                "Level.Value": null,
+                "Task": null,
+                "Opcode": null
+              },
+              "References": [
+                {
+                  "File": "./nsacyber/Event-Forwarding-Guidance/Subscriptions/NT6/DefenderErr.xml",
+                  "QueryList": [
+                    {
+                      "Id": "0",
+                      "SubQueries": [
+                        {
+                          "Type": "Select",
+                          "XPath": "*[System[Provider[@Name='Windows Defender'] and (Level=2 or Level=3) and (EventID=1005 or EventID=1006 or EventID=1008 or EventID=1010 or EventID=2001 or EventID=2003 or EventID=2004 or EventID=3002 or EventID=5008)]]"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "Id": 5008,
+              "Metadata": {
+                "Keywords": [],
+                "Description": null,
+                "Level": null,
+                "Level.Value": null,
+                "Task": null,
+                "Opcode": null
+              },
+              "References": [
+                {
+                  "File": "./nsacyber/Event-Forwarding-Guidance/Subscriptions/NT6/DefenderErr.xml",
+                  "QueryList": [
+                    {
+                      "Id": "0",
+                      "SubQueries": [
+                        {
+                          "Type": "Select",
+                          "XPath": "*[System[Provider[@Name='Windows Defender'] and (Level=2 or Level=3) and (EventID=1005 or EventID=1006 or EventID=1008 or EventID=1010 or EventID=2001 or EventID=2003 or EventID=2004 or EventID=3002 or EventID=5008)]]"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
               "Id": 3002,
               "Metadata": {
                 "Keywords": [],
                 "Description": null,
-                "Level": 3,
+                "Level": null,
                 "Level.Value": null,
                 "Task": null,
                 "Opcode": null
@@ -27087,6 +27425,33 @@
         {
           "Name": null,
           "Events": [
+            {
+              "Id": 770,
+              "Metadata": {
+                "Keywords": [],
+                "Description": null,
+                "Level": null,
+                "Level.Value": null,
+                "Task": null,
+                "Opcode": null
+              },
+              "References": [
+                {
+                  "File": "./palantir/windows-event-forwarding/wef-subscriptions/DNS.xml",
+                  "QueryList": [
+                    {
+                      "Id": "1",
+                      "SubQueries": [
+                        {
+                          "Type": "Select",
+                          "XPath": "*[System[(EventID=150 or EventID=770)]]"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
             {
               "Id": 150,
               "Metadata": {

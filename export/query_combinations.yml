@@ -2,6 +2,54 @@ Paths:
 - Name: System
   Providers:
   - Events:
+    - Id: 1116
+      Metadata:
+        Description: null
+        Keywords: []
+        Level: null
+        Level.Value: null
+        Opcode: null
+        Task: null
+      References:
+      - File: ./microsoft/Appendix E - Annotated baseline subscription event query.xml
+        QueryList:
+        - Id: '0'
+          SubQueries:
+          - Type: Select
+            XPath: '*[System[Provider[@Name=''Microsoft Antimalware''] and (EventID
+              >= 1116 and EventID <= 1119)]]'
+    - Id: 1117
+      Metadata:
+        Description: null
+        Keywords: []
+        Level: null
+        Level.Value: null
+        Opcode: null
+        Task: null
+      References:
+      - File: ./microsoft/Appendix E - Annotated baseline subscription event query.xml
+        QueryList:
+        - Id: '0'
+          SubQueries:
+          - Type: Select
+            XPath: '*[System[Provider[@Name=''Microsoft Antimalware''] and (EventID
+              >= 1116 and EventID <= 1119)]]'
+    - Id: 1118
+      Metadata:
+        Description: null
+        Keywords: []
+        Level: null
+        Level.Value: null
+        Opcode: null
+        Task: null
+      References:
+      - File: ./microsoft/Appendix E - Annotated baseline subscription event query.xml
+        QueryList:
+        - Id: '0'
+          SubQueries:
+          - Type: Select
+            XPath: '*[System[Provider[@Name=''Microsoft Antimalware''] and (EventID
+              >= 1116 and EventID <= 1119)]]'
     - Id: 1119
       Metadata:
         Description: null
@@ -10921,11 +10969,34 @@ Paths:
           SubQueries:
           - Type: Select
             XPath: '*[System[Provider[@Name=''EMET'']]]'
+    - Id: 1
+      Metadata:
+        Description: null
+        Keywords: []
+        Level: null
+        Level.Value: null
+        Opcode: null
+        Task: null
+      References:
+      - File: ./nsacyber/Event-Forwarding-Guidance/Subscriptions/NT6/EMETLogs.xml
+        QueryList:
+        - Id: '0'
+          SubQueries:
+          - Type: Select
+            XPath: '*[System[Provider[@Name=''EMET''] and (Level=2 or Level=3) and
+              (EventID=1 or EventID=2)]]'
+      - File: ./palantir/windows-event-forwarding/wef-subscriptions/EMET.xml
+        QueryList:
+        - Id: '0'
+          SubQueries:
+          - Type: Select
+            XPath: '*[System[Provider[@Name=''EMET''] and (Level=2 or Level=3) and
+              (EventID=1 or EventID=2)]]'
     - Id: 2
       Metadata:
         Description: null
         Keywords: []
-        Level: 3
+        Level: null
         Level.Value: null
         Opcode: null
         Task: null
@@ -11840,11 +11911,147 @@ Paths:
             XPath: '*[System[(EventID=1121 or EventID=1122 or EventID=5007)]]'
     Name: Microsoft-Windows-Windows Defender
   - Events:
+    - Id: 1005
+      Metadata:
+        Description: null
+        Keywords: []
+        Level: null
+        Level.Value: null
+        Opcode: null
+        Task: null
+      References:
+      - File: ./nsacyber/Event-Forwarding-Guidance/Subscriptions/NT6/DefenderErr.xml
+        QueryList:
+        - Id: '0'
+          SubQueries:
+          - Type: Select
+            XPath: '*[System[Provider[@Name=''Windows Defender''] and (Level=2 or
+              Level=3) and (EventID=1005 or EventID=1006 or EventID=1008 or EventID=1010
+              or EventID=2001 or EventID=2003 or EventID=2004 or EventID=3002 or EventID=5008)]]'
+    - Id: 1006
+      Metadata:
+        Description: null
+        Keywords: []
+        Level: null
+        Level.Value: null
+        Opcode: null
+        Task: null
+      References:
+      - File: ./nsacyber/Event-Forwarding-Guidance/Subscriptions/NT6/DefenderErr.xml
+        QueryList:
+        - Id: '0'
+          SubQueries:
+          - Type: Select
+            XPath: '*[System[Provider[@Name=''Windows Defender''] and (Level=2 or
+              Level=3) and (EventID=1005 or EventID=1006 or EventID=1008 or EventID=1010
+              or EventID=2001 or EventID=2003 or EventID=2004 or EventID=3002 or EventID=5008)]]'
+    - Id: 1008
+      Metadata:
+        Description: null
+        Keywords: []
+        Level: null
+        Level.Value: null
+        Opcode: null
+        Task: null
+      References:
+      - File: ./nsacyber/Event-Forwarding-Guidance/Subscriptions/NT6/DefenderErr.xml
+        QueryList:
+        - Id: '0'
+          SubQueries:
+          - Type: Select
+            XPath: '*[System[Provider[@Name=''Windows Defender''] and (Level=2 or
+              Level=3) and (EventID=1005 or EventID=1006 or EventID=1008 or EventID=1010
+              or EventID=2001 or EventID=2003 or EventID=2004 or EventID=3002 or EventID=5008)]]'
+    - Id: 2001
+      Metadata:
+        Description: null
+        Keywords: []
+        Level: null
+        Level.Value: null
+        Opcode: null
+        Task: null
+      References:
+      - File: ./nsacyber/Event-Forwarding-Guidance/Subscriptions/NT6/DefenderErr.xml
+        QueryList:
+        - Id: '0'
+          SubQueries:
+          - Type: Select
+            XPath: '*[System[Provider[@Name=''Windows Defender''] and (Level=2 or
+              Level=3) and (EventID=1005 or EventID=1006 or EventID=1008 or EventID=1010
+              or EventID=2001 or EventID=2003 or EventID=2004 or EventID=3002 or EventID=5008)]]'
+    - Id: 1010
+      Metadata:
+        Description: null
+        Keywords: []
+        Level: null
+        Level.Value: null
+        Opcode: null
+        Task: null
+      References:
+      - File: ./nsacyber/Event-Forwarding-Guidance/Subscriptions/NT6/DefenderErr.xml
+        QueryList:
+        - Id: '0'
+          SubQueries:
+          - Type: Select
+            XPath: '*[System[Provider[@Name=''Windows Defender''] and (Level=2 or
+              Level=3) and (EventID=1005 or EventID=1006 or EventID=1008 or EventID=1010
+              or EventID=2001 or EventID=2003 or EventID=2004 or EventID=3002 or EventID=5008)]]'
+    - Id: 2003
+      Metadata:
+        Description: null
+        Keywords: []
+        Level: null
+        Level.Value: null
+        Opcode: null
+        Task: null
+      References:
+      - File: ./nsacyber/Event-Forwarding-Guidance/Subscriptions/NT6/DefenderErr.xml
+        QueryList:
+        - Id: '0'
+          SubQueries:
+          - Type: Select
+            XPath: '*[System[Provider[@Name=''Windows Defender''] and (Level=2 or
+              Level=3) and (EventID=1005 or EventID=1006 or EventID=1008 or EventID=1010
+              or EventID=2001 or EventID=2003 or EventID=2004 or EventID=3002 or EventID=5008)]]'
+    - Id: 2004
+      Metadata:
+        Description: null
+        Keywords: []
+        Level: null
+        Level.Value: null
+        Opcode: null
+        Task: null
+      References:
+      - File: ./nsacyber/Event-Forwarding-Guidance/Subscriptions/NT6/DefenderErr.xml
+        QueryList:
+        - Id: '0'
+          SubQueries:
+          - Type: Select
+            XPath: '*[System[Provider[@Name=''Windows Defender''] and (Level=2 or
+              Level=3) and (EventID=1005 or EventID=1006 or EventID=1008 or EventID=1010
+              or EventID=2001 or EventID=2003 or EventID=2004 or EventID=3002 or EventID=5008)]]'
+    - Id: 5008
+      Metadata:
+        Description: null
+        Keywords: []
+        Level: null
+        Level.Value: null
+        Opcode: null
+        Task: null
+      References:
+      - File: ./nsacyber/Event-Forwarding-Guidance/Subscriptions/NT6/DefenderErr.xml
+        QueryList:
+        - Id: '0'
+          SubQueries:
+          - Type: Select
+            XPath: '*[System[Provider[@Name=''Windows Defender''] and (Level=2 or
+              Level=3) and (EventID=1005 or EventID=1006 or EventID=1008 or EventID=1010
+              or EventID=2001 or EventID=2003 or EventID=2004 or EventID=3002 or EventID=5008)]]'
     - Id: 3002
       Metadata:
         Description: null
         Keywords: []
-        Level: 3
+        Level: null
         Level.Value: null
         Opcode: null
         Task: null
@@ -15050,6 +15257,21 @@ Paths:
 - Name: DNS Server
   Providers:
   - Events:
+    - Id: 770
+      Metadata:
+        Description: null
+        Keywords: []
+        Level: null
+        Level.Value: null
+        Opcode: null
+        Task: null
+      References:
+      - File: ./palantir/windows-event-forwarding/wef-subscriptions/DNS.xml
+        QueryList:
+        - Id: '1'
+          SubQueries:
+          - Type: Select
+            XPath: '*[System[(EventID=150 or EventID=770)]]'
     - Id: 150
       Metadata:
         Description: null
