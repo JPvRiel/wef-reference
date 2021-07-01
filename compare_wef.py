@@ -80,7 +80,8 @@ pd.set_option('mode.chained_assignment','raise')
 yaml.Dumper.ignore_aliases = lambda *args : True
 
 output_dir = './export'
-print(os.getcwd())
+if args.custom:
+  output_dir = './export_with_custom'
 
 ## Reference/lookup provider metadata ##
 input_dir = './Windows Event Metadata/flattened'
@@ -178,7 +179,7 @@ def get_event_metadata(log_path, provider=None, event_id=None, level=None):
 def prune_none_and_empty(d):
   """
   Remove keys that have either null values, empty strings or empty arrays
-  See: https://stackoverflow.com/a/27974027/5472444   
+  See: https://stackoverflow.com/a/27974027/5472444
   """
 
   if not isinstance(d, (dict, list)):
@@ -202,13 +203,13 @@ def set_to_list(d):
 
 ## Functions to interpret and compare windows event selections ##
 
-# Regex patterns for windows event xpath queries  
+# Regex patterns for windows event xpath queries
 # (not a proper way to interpret xpath, just a rough approximation)
 re_xpath_provider = re.compile(r'Provider\[@Name\s*=\s*[\'"]([^\'"]+)[\'"]]', re.IGNORECASE)
 re_xpath_level = re.compile(r'Level\s*=\s*(\d+)', re.IGNORECASE)
 re_xpath_event_id = re.compile(r'EventID\s*=\s*(\d+)', re.IGNORECASE)
-# Deal with event ID ranges, e.g. *[System[(EventID >=4737 and EventID <=4739)]]'
-re_xpath_event_id_range = re.compile(r'EventID\s*>=\s*(\d+)\s+and\s+EventID\s*<=\s*(\d+)', re.IGNORECASE)
+# Deal with event ID ranges, e.g. *[System[(EventID >=4737 and EventID <=4739)]]', and they might be formatted over multiple lines.
+re_xpath_event_id_range = re.compile(r'EventID\s*>=\s*(\d+)\s+and\s+EventID\s*<=\s*(\d+)', re.IGNORECASE & re.MULTILINE)
 re_xml_comment = re.compile('<!--(.*?)-->', re.DOTALL & re.MULTILINE)
 
 
@@ -399,9 +400,9 @@ def enum_query_combinations(enum, s_file, q_id, q_parent_path, q_type, q):
             }
           )
       else:
-        logger.warning(f"Event and Provider metadata lookup failed for Path='{q_path}', Provider='{x_provider}', as per '{s_file}' at Query ID={q_id} and {q_type} Path='{q_path}' with XPath: '{q_xpath}'.")
+        logger.warning(f"Event and Provider metadata lookup failed for Path='{q_path}', Provider='{x_provider}', and EventID={x_event_id}, as per '{s_file}' at Query ID={q_id} and {q_type} Path='{q_path}' with XPath: '{q_xpath}'.")
         # Single list item with nullified values provides a quick hack to ensure at least one loop iteration adds a reference for the query later on.
-        m_list = [
+        m_list.append(
           {
             'Id': x_event_id,
             'Keywords': [],
@@ -412,7 +413,7 @@ def enum_query_combinations(enum, s_file, q_id, q_parent_path, q_type, q):
             'Opcode': None,
             'Provider': x_provider
           }
-        ]
+        )
 
   # Enumerate events with defined event IDs
   # NOTE: Verbose/explicit/unrolled complex dict update done because:
@@ -747,7 +748,7 @@ query_combinations_flattened_by_reference.to_csv(
   f'{output_dir}/query_combinations_flattened_by_reference.csv',
   index=False
 )
-logger.info('Exported flattened/normalised query combinations by event as "./export/query_combinations_flattened_by_reference.csv".')
+logger.info(f'Exported flattened/normalised query combinations by event as "./{output_dir}/query_combinations_flattened_by_reference.csv".')
 
 # Check for and warn about queries that were missing metadata lookups for Event IDs.
 logger.info('Reviewing queries that had missing metadata lookups.')
@@ -783,7 +784,7 @@ if not query_combinations_flattened_by_reference_null_eventid.empty:
     print('Table may require a wider terminal width to view without wrapping.')
   pd.options.display.width = max(term_columns, 80)
   print(query_combinations_flattened_by_reference_null_eventid_simple_name_view[['Path','Provider']].to_markdown(showindex=False), file=sys.stderr)
-  logger.warning('Refer to "./export/query_combinations_flattened_by_reference_with_null_eventid_warning.csv" for details of which references are affected by metadata lookup failures.')
+  logger.warning(f'Refer to "./{output_dir}/query_combinations_flattened_by_reference_with_null_eventid_warning.csv" for details of which references are affected by metadata lookup failures.')
 else:
   logger.info('All references could be mapped to event IDs via event metadata (good).')
 

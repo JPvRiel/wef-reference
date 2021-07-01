@@ -26,7 +26,7 @@ Note, Excel's Power Query data source `File.Contents()` function doesn't current
 
 ### Updating event query / subscription references
 
-The [`palantir`](./palantir/) and [`nsacyber`](./nsacyber/) sources are added as git submodules, so when any upstream changes occur in those projects, the submodules need to be rerun and steps 3 and 4 above  
+The [`palantir`](./palantir/) and [`nsacyber`](./nsacyber/) sources are added as git submodules, so when any upstream changes occur in those projects, the submodules need to be rerun and steps 3 and 4 above.
 
 The [`microsoft`](./microsoft/) query lists are localted in the Appendices  of the documentation site (a markdown file) and manually extracted into this repo.
 
@@ -54,7 +54,7 @@ The comparison can be run against a user supplied set of your own subscrition fi
 
 See `./compare_wef.py -h` for a few options to control metadata cross-referencing to events defined/implied by queries.
 
-The output files of the script are placed in `export`.
+The output files of the script are placed in `export`, or if custom subscriptions are added, `export_with_custom`.
 
 - Referenced subscription file sets are consolidated and summarized into single yaml files named per reference, e.g. `<reference>_wef_subscriptions.yml`.
 - Unified views of events accross all references are produced as `query_combinations` files in both `.yaml` and `.json` formats.
@@ -64,9 +64,17 @@ The output files of the script are placed in `export`.
 - Flattend CSV versions normalized by events and by reference are generated.
 - YAML intended as human-readable, JSON as a more common format suited to integrations, and CSV for importing into spreadsheet applications.
 
+### Comparison to custom subscriptions
+
+Redirecting output to `export_with_custom` allows for keeping a clean view of the referenced subscriptions in `export` and creating a sepate place for comparisons. This is also an awkward way to avoid accidental source code commits of custom event query references.
+
+A second spreadsheet, `wef-reference_with_custom.xlsx` is created as a stub with the needed data table query, but obviously, the data query needs to be refreshed to pull in the custom data.
+
+`custom/custom_eg.xml` provides an example where extra Microsoft SQL security events might be selected. Note however, the source system the metadata was extracted to in `Windows Event Metadata` did not have MS SQL installed, so the metdata lookup will fail and produce blank/null metadata enrichment. Extracting metadata on a system with the software installed should help resolve this.
+
 ## Enriching event queries with event metadata
 
-The subfolder [`Windows Event Metadata`](./Windows%20Event%20Metadata/) contains a PowerShell script to exporting event providers and event metadata.
+The subfolder [`Windows Event Metadata`](./Windows%20Event%20Metadata/) contains a PowerShell script to exporting event providers and event metadata. See [`Windows Event Metadata/README.md`](./Windows%20Event%20Metadata/README.md).
 
 The output of the script is imported by `compare_wef.py` to enrich and improve enumerating the event IDs that the various XPath queries would explicitly or implicitly select or suppress.
 
