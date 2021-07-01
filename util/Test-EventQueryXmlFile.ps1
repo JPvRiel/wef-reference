@@ -8,13 +8,13 @@
 .PARAMETER MaxEvents
   The overall upper limit of events to return. This limit is shared by the entire query list set.
 .PARAMETER TestUnit
-  TestUnit can be either of 'QueryList', 'EachQuery', or 'EachSelect' with the latter two options useful for independent tests of the QueryList components.
+  TestUnit can be either of 'QueryList', 'EachQuery', or 'EachNode' with the latter two options useful for independent tests of the QueryList components. 'EachNode' will show events in scope for both Select and Suppress node types and provides the most verbose testing output.
 .PARAMETER StartDateTime
   The newest event timestamp to look for events. Assumes the source query file does not already have it's own time filters applied.
 .PARAMETER EndDateTime
   The oldest event timestamp to look for events. Assumes the source query file does not already have it's own time filters applied.
 .PARAMETER JobTimeoutSec
-  The maximum number of seconds to wait for query tests to complete. With 'EachQuery' or 'EachSelect' TestUnit, this is per query tested, not an overall timeout, so expect testing to take longer than a single timeout.
+  The maximum number of seconds to wait for query tests to complete. With 'EachQuery' or 'EachNode' TestUnit, this is per query tested, not an overall timeout, so expect testing to take longer than a single timeout.
 .PARAMETER CsvTestResultFile
   If specified, summary aggregate of events found per test will be output to the CSV file.
 #>
@@ -23,7 +23,7 @@ param(
   [Parameter(Position=0)][Alias('ComputerName')][String[]]$Computers = @('.'),
   [Parameter(Position=1, Mandatory)][String]$XmlFilePath,
   [int]$MaxEvents = 10000,
-  [String][ValidateSet('QueryList','EachQuery','EachSelect')]$TestUnit = 'QueryList',
+  [String][ValidateSet('QueryList','EachQuery','EachNode')]$TestUnit = 'QueryList',
   [switch]$SortByEventCount,
   $StartDateTime=$null,
   $EndDateTime=$null,
@@ -112,7 +112,7 @@ Write-Information "$InputLineCount lines and $InputCharCount characters input fr
 # Validate and display a summary of the XML Queries and Select or Suppress XPath items.
 $validatedXml = $null
 $countQueries = 0
-$countSelects = 0
+$countSelect = 0
 $countSuppress = 0
 try {
   $validatedXml = [xml]$xmlQueryList
@@ -123,7 +123,7 @@ try {
   foreach ($query in $validatedXml.QueryList.Query) {
     $countQueries++
     foreach ($select in $query.Select) {
-      $countSelects++
+      $countSelect++
       [void]$QueryList.Add(
         [PSCustomObject]@{
           QueryId = $query.Id
@@ -152,7 +152,7 @@ catch {
   Write-Error "Unable to interpret '$XmlFilePath' as XML."
   throw $_
 }
-Write-Output "Summary: '$XmlFilePath' had $countQueries queries, with $countSelects select and $countSuppress suppress nodes."
+Write-Output "Summary: '$XmlFilePath' had $countQueries queries, with $countSelect select and $countSuppress suppress nodes."
 
 $TestEventQueryScriptBlock = {
   param(
@@ -251,6 +251,7 @@ function Invoke-TestUnitJob {
   }
 
   # Start job
+  Write-Output "Starting test unit job with:`n'$($XmlQueryList.OuterXml)'"
   $job = Invoke-Command -AsJob -JobName 'TestUnitJob' -ComputerName $Computers -ScriptBlock $TestEventQueryScriptBlock -ArgumentList $transformedXmlQueryList, $MaxEvents
   $jobState = ($job | Wait-Job -TimeoutSec $JobTimeoutSec).State
   if ($jobState -notin @('Completed', 'Failed')) {
@@ -266,7 +267,7 @@ function Invoke-TestUnitJob {
   $jobObjects = @($jobOutput | ?{$_.GetType().Name -eq 'PSCustomObject'} | Select-Object -Property * -ExcludeProperty PSComputerName,	RunspaceId, PSShowComputerName)
   if (-not ($jobError -or $jobWarning)) {
     if ($jobObjects.Count -gt 0 -and $jobObjects[0].Id) {
-      Write-Output "$($jobObjects.Count) event groups found for query:`n'$($XmlQueryList.OuterXml)'"
+      Write-Output "$($jobObjects.Count) event groups found:`n"
       $jobObjects | Format-Table -Property Log, Provider, Id, LevelName, MachineName, Count, FirstTime, LastTime, LastMessage
       # Display result table, but avoid displaying if there is a single empty exception object returned.
     }
@@ -284,7 +285,7 @@ function Invoke-TestUnitJob {
 # NB! Don't allow too many query jobs to run in parallel as it will overwhelm the event log service on the computer. Rather wait on each Unit Test query per computer.
 Write-Output "Testing query list on $($Computers.Count) computers in parallel jobs. Event limits apply per computer. This may take a while..."
 $maxEventsTotal = $MaxEvents
-Switch ($TestUnit) {
+switch ($TestUnit) {
   'QueryList' {
     Write-Output "The full query list will be tested and limited to $maxEventsTotal events."
     Invoke-TestUnitJob -XmlQueryList $validatedXml -MaxEvents $maxEventsTotal
@@ -302,23 +303,39 @@ Switch ($TestUnit) {
       Invoke-TestUnitJob -XmlQueryList $queryListSingleQuery -MaxEvents $maxEventsPerQuery
     }
   }
-  'EachSelect' {
-    $maxEventsPerSelect = [math]::floor($maxEventsTotal / $countSelects)
-    Write-Output "Each Select part of a query will be tested independently and limited to $maxEventsPerSelect events per select ($maxEventsTotal total events / $countSelects selects)."
-    Write-Warning "The select unit test will not apply suppress nodes to the query."
-    Write-Warning "Testing each select in isolation will take much longer." -WarningAction Inquire
+  'EachNode' {
+    $maxEventsPerNode = [math]::floor($maxEventsTotal / ($countSelect + $countSuppress))
+    Write-Output "Each Select and Suppress node of a query will be tested independently and limited to $maxEventsPerNode events per select ($maxEventsTotal total events / ($countSelect selects + $countSuppress suppresses))."
+    Write-Warning "The node unit test will convert suppress nodes into selecting queries to show which events would have been suppressed."
+    Write-Warning "Testing each node in isolation will take much longer." -WarningAction Inquire
     $queryCount = 0
     foreach ($query in $validatedXml.QueryList.Query) {
+      $queryId = $query.Id
       $queryCount++
       $selectCount = 0
-      foreach ($select in $query.Select) {
-        $selectCount++
-        $queryId = $query.Id
-        $logPath = $select.Path
-        $xPath = $select.'#text'
-        $queryListSingleSelect = [xml]"<QueryList><Query Id='$queryId'>$($select.OuterXml)</Query></QueryList>"
-        Write-Debug "Testing Select #$selectCount from QueryID '$queryId' with LogPath '$logPath' and XPath:`n$xPath"
-        Invoke-TestUnitJob -XmlQueryList $queryListSingleSelect -MaxEvents $maxEventsPerSelect
+      $suppressCount = 0
+      foreach ($node in $query.ChildNodes) {
+        if ($node.NodeType -eq 'Element') {
+          switch ($node.Name) {
+            'Select' {
+              $selectCount++
+              Write-Output "Test SELECT node #$selectCount from QueryID '$queryId'."
+            }
+            'Suppress' {
+              $suppressCount++
+              Write-Output "Test SUPPRESS node #$suppressCount from QueryID '$queryId'."
+            }
+            default {
+              Write-Error "'$($node.Name)' was not an expected 'Select' or 'Suppress' element."
+              break
+            }
+          }
+          # Note: even if Suppress, we have to Select to show what would have been surpressed
+          $logPath = $node.Path
+          $xPath = $node.'#text'
+          $queryListSingleSelect = [xml]"<QueryList><Query Id='$queryId'><Select Path='$logPath'>$($xPath)</Select></Query></QueryList>"
+          Invoke-TestUnitJob -XmlQueryList $queryListSingleSelect -MaxEvents $maxEventsPerNode
+        }
       }
     }
   }
@@ -330,7 +347,7 @@ if ($eventGroupSummaries.Count -gt 0) {
     $eventGroupSummaries = $eventGroupSummaries | Sort-Object -Property Count -Descending
   }
   else {
-    $eventGroupSummaries = $eventGroupSummaries | Sort-Object XmlQueryList, Failed, Log, Provider, Id, MachineName
+    $eventGroupSummaries = $eventGroupSummaries | Sort-Object -Property XmlQueryList, Failed, Log, Provider, Id, MachineName
   }
   if ($CsvTestResultFile) {
     $eventGroupSummaries | ConvertTo-CSV -NoTypeInformation | Out-File -FilePath $CsvTestResultFile
