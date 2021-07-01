@@ -407,7 +407,7 @@ def enum_query_combinations(enum, s_file, q_id, q_parent_path, q_type, q):
             'Id': x_event_id,
             'Keywords': [],
             'Description': None,
-            'Level': x_level,
+            'Level': None,
             'Level.Value': None,
             'Task': None,
             'Opcode': None,
