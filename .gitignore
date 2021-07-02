@@ -1,10 +1,8 @@
 # Some hacks to force git to keep dirs that are empty but may be used for comparisons to custom event query lists
 custom/*
 !custom/.keep
-!custom/.gitkeep
 #!custom/custom_eg.xml
 custom.*
 export_with_custom/*
 !export_with_custom/.keep
-!export_with_custom/.gitkeep
 wef-reference_with_custom.xlsx
