@@ -275,6 +275,9 @@ function Invoke-TestUnitJob {
       Write-Error 'Unexpected result where there are no warnings or errors, but also no event group IDs are found in the returned job object.' -ErrorAction 'Stop'
     }
   }
+  else {
+    Write-Output "0 event groups found."
+  }
   [Console]::Out.Flush()
   # store job result object output for export at the end
   [void]$eventGroupSummaries.AddRange($jobObjects)
@@ -299,7 +302,7 @@ switch ($TestUnit) {
       $queryCount++
       $queryId = $query.Id
       $queryListSingleQuery = [xml]"<QueryList>$($query.OuterXml)</QueryList>"
-      Write-Verbose "Testing QueryID '$queryId'."
+      Write-Output "`n-- Test QueryID '$queryId' --"
       Invoke-TestUnitJob -XmlQueryList $queryListSingleQuery -MaxEvents $maxEventsPerQuery
     }
   }
@@ -307,7 +310,7 @@ switch ($TestUnit) {
     $maxEventsPerNode = [math]::floor($maxEventsTotal / ($countSelect + $countSuppress))
     Write-Output "Each Select and Suppress node of a query will be tested independently and limited to $maxEventsPerNode events per select ($maxEventsTotal total events / ($countSelect selects + $countSuppress suppresses))."
     Write-Warning "The node unit test will convert suppress nodes into selecting queries to show which events would have been suppressed."
-    Write-Warning "Testing each node in isolation will take much longer." -WarningAction Inquire
+    Write-Warning "Testing each node in isolation will take much longer." -WarningAction 'Inquire'
     $queryCount = 0
     foreach ($query in $validatedXml.QueryList.Query) {
       $queryId = $query.Id
@@ -319,13 +322,14 @@ switch ($TestUnit) {
           switch ($node.Name) {
             'Select' {
               $selectCount++
-              Write-Output "Test SELECT node #$selectCount from QueryID '$queryId'."
+              Write-Output "`n-- Test SELECT node #$selectCount from QueryID '$queryId' --"
             }
             'Suppress' {
               $suppressCount++
-              Write-Output "Test SUPPRESS node #$suppressCount from QueryID '$queryId'."
+              Write-Output "`n-- Test SUPPRESS node #$suppressCount from QueryID '$queryId'. --"
             }
             default {
+              Write-Output "`n-- Test node failure --"
               Write-Error "'$($node.Name)' was not an expected 'Select' or 'Suppress' element."
               break
             }
