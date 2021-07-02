@@ -332,7 +332,7 @@ switch ($TestUnit) {
           }
           # Note: even if Suppress, we have to Select to show what would have been surpressed
           $logPath = $node.Path
-          $xPath = $node.'#text'
+          $xPath = $node.InnerXml
           $queryListSingleSelect = [xml]"<QueryList><Query Id='$queryId'><Select Path='$logPath'>$($xPath)</Select></Query></QueryList>"
           Invoke-TestUnitJob -XmlQueryList $queryListSingleSelect -MaxEvents $maxEventsPerNode
         }
