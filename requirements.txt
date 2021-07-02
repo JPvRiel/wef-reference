@@ -1,0 +1,5 @@
+colorlog
+lxml
+pyyaml
+pandas
+tabulate
