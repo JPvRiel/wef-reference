@@ -261,6 +261,7 @@ def get_queries(xml_query_list):
     # - The etree.Element class was extended as QueryElement with and all_text property because the standard text property truncates text after any embedded comments.
     # - TODO: It's undetermined if both the XPath and the query can simultaneously be set and are allowed to be different or must be consistant.
     # - TODO: Collected comments can get disassociated from the nearby select or suppress statement they annotate, so it's less useful for large/complex query IDs.
+    # - FIXME: The data structure below using lazy regex to seperately list IDs and providers causes disassociation between the provider and event ID and misaligned flattened CSV output by event ID later on.
     queries.append(
       {
         'Comments': list(x_query.xpath('./comment()')),
