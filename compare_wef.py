@@ -68,7 +68,7 @@ m_choices_map = {
 }
 m_include = [m_choices_map[i] for i in args.metadata]
 if args.metadata_full_description and 'description' not in args.metadata:
-  logger.warning(f'\'description\' was not given with \'--metadata\', but \'--metadata-full-description\' was given, so description metadata will be inlcuded in full.')
+  logger.warning(f'\'description\' was not given with \'--metadata\', but \'--metadata-full-description\' was given, so description metadata will be included in full.')
   m_include.append('Description')
 
 ## panda's options
@@ -109,7 +109,7 @@ def get_provider_metadata(log_path, provider=None):
   - Log path required
   - Provider optional
   """
-  
+
   metadata_columns = ['Id', 'Keywords.Name', 'Levels.Name', 'Tasks.Name', 'Opcodes.Name', 'ProviderName']
   metadata_lookup = None
   if provider:
@@ -232,6 +232,21 @@ def get_event_id_list(xpath):
   return event_ids
 
 
+def xml_element_get_all_text(element: lxml.etree.Element):
+  """
+  Function to get all text, not just first child:
+
+  - The .text property of elements from lxml only includes the first text part and is split by commented causing <Element>.text to produce truncated/partial text.
+  - Instead of <Element>.text, using  <Element>.xpath('text()') is safer and will get a list of all text.
+  - Extending lxml etree BaseElement class was not used due to:
+    - Complexity where one cannot simply extend a class without interacting with the element tree. See: https://lxml.de/element_classes.html.
+    - Extending the class injects a parent node element and shifts the current element with its properrties as a child element of the extended element.
+  """
+
+  #return ''.join([t for t in element.itertext()])
+  return ''.join(element.xpath('text()'))
+
+
 def get_queries(xml_query_list):
   """
   Extract elements and metadata from a windows event XML query list
@@ -243,6 +258,7 @@ def get_queries(xml_query_list):
   for x_query in x_query_list:
     # NOTE:
     # - The Path (log name) might be specified in either the query attributes (along with to the query ID) or in the XPath definition.
+    # - The etree.Element class was extended as QueryElement with and all_text property because the standard text property truncates text after any embedded comments.
     # - TODO: It's undetermined if both the XPath and the query can simultaneously be set and are allowed to be different or must be consistant.
     # - TODO: Collected comments can get disassociated from the nearby select or suppress statement they annotate, so it's less useful for large/complex query IDs.
     queries.append(
@@ -251,19 +267,19 @@ def get_queries(xml_query_list):
         'Attributes': dict(x_query.attrib),
         'Selections': [
           { 'Path': str(s.xpath('@Path')[0]),
-            'XPath': s.text,
-            'Providers': re_xpath_provider.findall(s.text),
-            'Levels': re_xpath_level.findall(s.text),
-            'EventIDs': get_event_id_list(s.text)
+            'XPath': xml_element_get_all_text(s),
+            'Providers': re_xpath_provider.findall(xml_element_get_all_text(s)),
+            'Levels': re_xpath_level.findall(xml_element_get_all_text(s)),
+            'EventIDs': get_event_id_list(xml_element_get_all_text(s))
           }
           for s in x_query.xpath('./Select')
         ],
         'Suppressions': [
           { 'Path': str(s.xpath('@Path')[0]),
-            'XPath': s.text,
-            'Providers': re_xpath_provider.findall(s.text),
-            'Levels': re_xpath_level.findall(s.text),
-            'EventIDs': get_event_id_list(s.text)
+            'XPath': xml_element_get_all_text(s),
+            'Providers': re_xpath_provider.findall(xml_element_get_all_text(s)),
+            'Levels': re_xpath_level.findall(xml_element_get_all_text(s)),
+            'EventIDs': get_event_id_list(xml_element_get_all_text(s))
           } for s in x_query.xpath('./Suppress')
         ]
       }
@@ -281,7 +297,7 @@ def get_subscription_query_list_xml(xml_file_path):
     # XPath selection requires namespace to used!
     x_subscription_query = x_subscription.xpath('/ns:Subscription/ns:Query',  namespaces={'ns': 'http://schemas.microsoft.com/2006/03/windows/events/subscription'})
     assert len(x_subscription_query) == 1, f"Unexpected number of elements matched by XPath query '/ns:Subscription/ns:Query' for file {xml_file_path}."
-    s_x_query = x_subscription_query[0].text
+    s_x_query = xml_element_get_all_text(x_subscription_query[0])
     return s_x_query
 
 
@@ -289,16 +305,16 @@ def enum_query_combinations(enum, s_file, q_id, q_parent_path, q_type, q):
   """
   Enumerate combinations of select or suppress sub-query elements and propergate references to the deepest level of event specificity.
   During enumeration, event and provider metadata lookups are done and used to increase the specificity.
-  
+
   enum: dict object passed as a reference to add enumerated events and references to.
   s_file: subscription file name to reference
   q_id: Query ID of the XML element
   q_parent_path: Path attribute in the Query element
   q_type: Query type element, either Select or Suppress
   q_xpath: XPath data/text within Select or Suppress element
-  
+
   Note, a pseudo-hierarchy of event query specificity, and related reference level, is as follows:
-  
+
   Paths:
     Path: required
       Providers
@@ -306,15 +322,15 @@ def enum_query_combinations(enum, s_file, q_id, q_parent_path, q_type, q):
           Events:
             Event ID: optional
             (Reference at this level)
-  
+
   When query parsing and metadata lookups fail to resolve a specific provider(s) or event ID(s), a single null node is created.
-  
+
   NOTE: Query specificity:
   - A query could just select an Event directly from a Path without specifying the Provider.
   - When an Event ID or Level is selected without a Provider, ambiguity results and multiple Providers and Events are in scope.
   - With the Security log Path/Channel, the Microsoft-Windows-Security-Auditing is the most common provider producing into this channel.
   - The Path attribute can be stipulated at query level and the sub-query Select or Suppress level. The deeper Select/Suppress level is assumed to take precedence.
-  
+
   NOTE: Query metadata lookup failure reasons:
   - FIXME: Regex to extract event provider, event ID, or level failed to match properly.
   - Query did not select a valid/defined event or provider.
@@ -322,7 +338,7 @@ def enum_query_combinations(enum, s_file, q_id, q_parent_path, q_type, q):
 
   - FIXME: This function has become too complex and bloated. Perhaps it should be simplified by refactored using objects to compartmentalise and abstract the complexity.
   """
-  
+
   # Assume sub-level the <Select Path=...> or <Suppress Path=...> attribute will take precadence over parent <Query Path=...> attribute when choosing a channel
   q_path = q['Path']
   if not q_path:
@@ -333,10 +349,10 @@ def enum_query_combinations(enum, s_file, q_id, q_parent_path, q_type, q):
       q_path = q_parent_path
   elif q_parent_path and q_parent_path != q_path:
     logger.warning(f"Contradicting query Path in '{s_file}'. Query ID {q_id}'s the child path attribute, <{q_type} Path='{q_path}'>, does not match the parent path attribute, <Query Path='{q_parent_path}'>. The child Path will take precadence.")
-  
+
   # XPath extractions and permutations
   q_xpath = q['XPath']
-  # NOTE: 
+  # NOTE:
   # - itertools.product or the list comprehension building a tuple from nested iterations will return an empty list if one of the iterations/lists input is empty
   # - Avoid this by replacing empty lists with a non-empty list and the single null/None value to force the product to expand out the empty sets
   # - FIXME: expansion is only based on Providers, Event IDs and Levels and this will fail to expand on queries that use other event attribtues such as Keywords, Tasks, Opcodes or Event Data.
@@ -644,7 +660,7 @@ query_combinations_labeled = {
             } for k_event_id,v_event in v_events.items()
           ]
         } for k_provider,v_events in v_providers.items()
-      ] 
+      ]
     } for k_path,v_providers in query_combinations.items()
   ]
 }
@@ -679,7 +695,7 @@ query_combinations_flattened_by_event['References'] = query_combinations_flatten
 reference_dirs = ['microsoft', 'nsacyber', 'palantir']
 if len(custom_subscription_list) > 0:
   reference_dirs.append('custom')
-  
+
 # Append expanded reference columns
 for i, r_dir in enumerate(reference_dirs):
   # Boolean to list if related to core reference or not
